@@ -65,23 +65,57 @@ export interface Buff {
   updated_at?: string; // 호환성을 위해 유지
 }
 
-// Items 타입
+// Equipment 타입
+export interface Equipment {
+  item_id: number;
+  durability: number;
+  level: number;
+  potential: number;
+  requiredClass: string;
+  sockets_limit: number;
+  stars: number;
+  matk: number;
+  patk: number;
+  patk_max: number;
+  mdef: number;
+  pdef: number;
+  type_attack: string;
+  type_equipment: string;
+  unidentified: number;
+  unidentifiedRandom: number;
+  anvil_atk: string;
+  anvil_def: string;
+  anvil_price: string;
+  transcend_price: string;
+  bonuses: any[];
+}
+
+// Items 타입 - 새로운 JSON 구조에 맞게 업데이트
 export interface Item {
   id: number;
-  ids: number;
+  ids: string;
+  id_name: string;
   name: string;
-  description: string;
-  descriptions?: string;
+  descriptions: string;
+  description?: string; // 호환성을 위해 유지
+  weight: number;
+  tradability: string;
   type: string;
-  rarity: string;
-  level: number;
-  stats?: Record<string, any>;
+  grade: number;
+  cooldown: number;
+  icon: string;
+  icon_url: string;
+  equipment?: Equipment;
+  // 호환성을 위해 기존 필드들 유지
+  rarity?: string;
+  level?: number;
   price?: number;
+  stats?: Record<string, any>;
   stackable?: boolean;
-  weight?: number;
-  icon_url?: string;
-  created_at: string;
-  updated_at: string;
+  created: string;
+  updated: string;
+  created_at?: string; // 호환성을 위해 유지
+  updated_at?: string; // 호환성을 위해 유지
 }
 
 // Monsters 타입 - MCP API 구조에 맞게 업데이트

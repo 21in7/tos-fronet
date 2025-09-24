@@ -137,10 +137,10 @@ export const buffsApi = {
 // Items API
 export const itemsApi = {
   getAll: (params?: QueryParams) => apiClient.get('/items', params),
-  getById: (id: number) => apiClient.get(`/items/${id}`),
+  getById: (ids: string | number) => apiClient.get(`/items/${ids}`),
   create: (data: any) => apiClient.post('/items', data),
-  update: (id: number, data: any) => apiClient.put(`/items/${id}`, data),
-  delete: (id: number) => apiClient.delete(`/items/${id}`),
+  update: (ids: string | number, data: any) => apiClient.put(`/items/${ids}`, data),
+  delete: (ids: string | number) => apiClient.delete(`/items/${ids}`),
   getStats: () => apiClient.get('/items/stats'),
   getTypes: () => apiClient.get('/items/types'),
   getRarities: () => apiClient.get('/items/rarities'),
