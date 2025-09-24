@@ -12,12 +12,12 @@ import { ArrowLeft, Skull, Heart, Shield, Zap, Target, Sword } from 'lucide-reac
 export default function MonsterDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const monsterId = params.id as string;
+  const monsterIds = params.id as string;
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['monster', monsterId],
-    queryFn: () => monstersApi.getById(parseInt(monsterId)),
-    enabled: !!monsterId,
+    queryKey: ['monster', monsterIds],
+    queryFn: () => monstersApi.getById(monsterIds),
+    enabled: !!monsterIds,
   });
 
   if (isLoading) {
@@ -92,6 +92,7 @@ export default function MonsterDetailPage() {
                   height={128}
                   type="monster"
                   className="border-2 border-gray-200"
+                  priority={true} // 상세 페이지 메인 이미지는 우선 로딩
                 />
               </div>
 
@@ -141,10 +142,12 @@ export default function MonsterDetailPage() {
                 </div>
 
                 {/* 설명 */}
-                {monster.description && (
+                {(monster.descriptions || monster.description) && (
                   <div className="mb-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">설명</h3>
-                    <p className="text-gray-700 leading-relaxed">{monster.description}</p>
+                    <p className="text-gray-700 leading-relaxed">
+                      {monster.descriptions || monster.description || '설명이 없습니다.'}
+                    </p>
                   </div>
                 )}
               </div>
@@ -270,11 +273,15 @@ export default function MonsterDetailPage() {
             </div>
             <div>
               <span className="text-gray-600">생성일:</span>
-              <span className="ml-2">{new Date(monster.created_at).toLocaleDateString('ko-KR')}</span>
+              <span className="ml-2">
+                {new Date(monster.created || monster.created_at || '').toLocaleDateString('ko-KR')}
+              </span>
             </div>
             <div>
               <span className="text-gray-600">수정일:</span>
-              <span className="ml-2">{new Date(monster.updated_at).toLocaleDateString('ko-KR')}</span>
+              <span className="ml-2">
+                {new Date(monster.updated || monster.updated_at || '').toLocaleDateString('ko-KR')}
+              </span>
             </div>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { mapsApi } from '@/lib/api';
 import { Map } from '@/types/api';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
-import { MapPin, Skull, Gift } from 'lucide-react';
+import { MapPin, Skull, Gift, Edit, Trash2 } from 'lucide-react';
 import GameImage from '@/components/common/GameImage';
 
 export default function MapsPage() {

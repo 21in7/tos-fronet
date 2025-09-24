@@ -1,6 +1,5 @@
 import Image from 'next/image';
-import { useState } from 'react';
-import { useImageCache } from '@/hooks/useImageCache';
+import { useState, useEffect } from 'react';
 
 interface GameImageProps {
   src?: string;
@@ -10,6 +9,7 @@ interface GameImageProps {
   className?: string;
   fallback?: string;
   type?: 'item' | 'monster' | 'skill' | 'job' | 'map';
+  priority?: boolean;
 }
 
 export default function GameImage({ 
@@ -19,10 +19,37 @@ export default function GameImage({
   height = 64, 
   className = '',
   fallback = '/placeholder-item.png',
-  type = 'item'
+  type = 'item',
+  priority = false
 }: GameImageProps) {
   const [imageError, setImageError] = useState(false);
-  const { cachedSrc, isLoading, error: cacheError } = useImageCache(src);
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  // URL 경로 수정 함수 (icon -> icons)
+  const fixIconUrl = (url?: string): string | undefined => {
+    if (!url) return url;
+    
+    // https://r2.gihyeonofsoul.com/icon/ -> https://r2.gihyeonofsoul.com/icons/
+    const fixedUrl = url.replace('/icon/', '/icons/');
+    
+    // 디버깅용 로그 (URL이 변경된 경우만)
+    if (fixedUrl !== url) {
+      console.log(`🔧 URL 수정: ${url} → ${fixedUrl}`);
+    }
+    
+    return fixedUrl;
+  };
+
+  // 수정된 URL
+  const fixedSrc = fixIconUrl(src);
+
+  // src가 변경되면 상태 리셋
+  useEffect(() => {
+    if (fixedSrc) {
+      setImageError(false);
+      setIsImageLoaded(false);
+    }
+  }, [fixedSrc]);
   
   // 타입별 기본 아이콘 설정
   const getDefaultIcon = () => {
@@ -42,49 +69,69 @@ export default function GameImage({
   };
 
   const handleImageError = () => {
-    console.log('이미지 로드 실패:', src);
+    console.warn(`이미지 로드 실패: ${fixedSrc} (원본: ${src})`);
     setImageError(true);
+    setIsImageLoaded(false);
   };
 
-  // src가 없거나 이미지 로드에 실패한 경우 기본 아이콘 표시
-  if (!src || imageError || cacheError) {
-    if (!src) {
-      console.log('이미지 src 없음, 기본 아이콘 표시:', type);
+  const handleImageLoad = () => {
+    setIsImageLoaded(true);
+    setImageError(false);
+  };
+
+  // URL 유효성 검사
+  const isValidImageUrl = (url?: string): boolean => {
+    if (!url) return false;
+    try {
+      new URL(url);
+      return url.match(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i) !== null;
+    } catch {
+      return false;
     }
+  };
+
+  // 이미지를 보여줄 수 없는 경우들
+  const shouldShowFallback = !fixedSrc || !isValidImageUrl(fixedSrc) || imageError;
+
+  if (shouldShowFallback) {
     return (
-      <div className={`relative overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center ${className}`} style={{ width, height }}>
-        <span className="text-gray-400 text-2xl">{getDefaultIcon()}</span>
+      <div 
+        className={`relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border ${className}`} 
+        style={{ width, height }}
+        title={`${alt} (이미지 없음)`}
+      >
+        <span className="text-gray-400 text-2xl select-none">{getDefaultIcon()}</span>
       </div>
     );
   }
-
-  // 로딩 중일 때 스켈레톤 표시
-  if (isLoading) {
-    return (
-      <div className={`relative overflow-hidden rounded-lg bg-gray-200 animate-pulse ${className}`} style={{ width, height }}>
-        <div className="w-full h-full bg-gray-300"></div>
-      </div>
-    );
-  }
-
 
   return (
     <div className={`relative overflow-hidden rounded-lg ${className}`}>
       <Image
-        src={cachedSrc || src}
+        src={fixedSrc}
         alt={alt}
         width={width}
         height={height}
-        className="object-cover"
-        unoptimized={true}
+        className={`object-cover transition-opacity duration-200 ${
+          isImageLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
         onError={handleImageError}
-        suppressHydrationWarning={true}
-        priority={false}
-        loading="lazy"
-        // 캐싱 설정
-        placeholder="blur"
-        blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+        onLoad={handleImageLoad}
+        unoptimized={true} // 최적화 비활성화로 속도 개선
+        priority={priority}
+        loading={priority ? 'eager' : 'lazy'}
+        style={{ 
+          objectFit: 'cover',
+          backgroundColor: '#f3f4f6'
+        }}
       />
+      
+      {/* 이미지가 로드되지 않았을 때 보여줄 백그라운드 */}
+      {!isImageLoaded && !imageError && (
+        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+          <span className="text-gray-400 text-lg animate-pulse">{getDefaultIcon()}</span>
+        </div>
+      )}
     </div>
   );
 }

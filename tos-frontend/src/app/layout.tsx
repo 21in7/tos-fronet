@@ -18,6 +18,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        <link rel="preconnect" href="https://r2.gihyeonofsoul.com" />
+        <link rel="dns-prefetch" href="https://r2.gihyeonofsoul.com" />
+      </head>
       <body className={inter.className}>
         <QueryProvider>
           <Layout>

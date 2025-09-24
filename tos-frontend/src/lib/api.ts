@@ -115,10 +115,10 @@ export const apiClient = new ApiClient(API_BASE_URL);
 // Attributes API
 export const attributesApi = {
   getAll: (params?: QueryParams) => apiClient.get('/attributes', params),
-  getById: (id: number) => apiClient.get(`/attributes/${id}`),
+  getById: (ids: string | number) => apiClient.get(`/attributes/${ids}`),
   create: (data: any) => apiClient.post('/attributes', data),
-  update: (id: number, data: any) => apiClient.put(`/attributes/${id}`, data),
-  delete: (id: number) => apiClient.delete(`/attributes/${id}`),
+  update: (ids: string | number, data: any) => apiClient.put(`/attributes/${ids}`, data),
+  delete: (ids: string | number) => apiClient.delete(`/attributes/${ids}`),
   getStats: () => apiClient.get('/attributes/stats'),
   getTypes: () => apiClient.get('/attributes/types'),
 };
@@ -135,13 +135,13 @@ export const itemsApi = {
   getRarities: () => apiClient.get('/items/rarities'),
 };
 
-// Monsters API
+// Monsters API - 기존 REST API 호출 방식
 export const monstersApi = {
   getAll: (params?: QueryParams) => apiClient.get('/monsters', params),
-  getById: (id: number) => apiClient.get(`/monsters/${id}`),
+  getById: (ids: string) => apiClient.get(`/monsters/${ids}`),
   create: (data: any) => apiClient.post('/monsters', data),
-  update: (id: number, data: any) => apiClient.put(`/monsters/${id}`, data),
-  delete: (id: number) => apiClient.delete(`/monsters/${id}`),
+  update: (ids: string, data: any) => apiClient.put(`/monsters/${ids}`, data),
+  delete: (ids: string) => apiClient.delete(`/monsters/${ids}`),
   getStats: () => apiClient.get('/monsters/stats'),
 };
 

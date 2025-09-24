@@ -55,7 +55,7 @@ export default function Dashboard() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">대시보드</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Tavern of Soul 게임 데이터 현황을 확인하세요.
+            트리오브세이비어 게임 데이터 현황을 확인하세요.
           </p>
         </div>
 

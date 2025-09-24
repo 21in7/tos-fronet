@@ -41,7 +41,7 @@ export default function Header() {
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
                 <h1 className="text-xl font-bold text-gray-900">
-                  Tavern of Soul
+                  트리오브세이비어
                 </h1>
               </div>
               <div className="ml-4 flex items-center">
@@ -73,7 +73,7 @@ export default function Header() {
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               <h1 className="text-xl font-bold text-gray-900">
-                Tavern of Soul
+                트리오브세이비어
               </h1>
             </div>
             <div className="ml-4 flex items-center">

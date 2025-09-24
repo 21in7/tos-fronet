@@ -21,17 +21,26 @@ export interface ApiError {
   timestamp: string;
 }
 
-// Attributes 타입
+// Attributes 타입 - 새로운 JSON 구조에 맞게 업데이트
 export interface Attribute {
   id: number;
-  ids: number;
+  ids: string;
+  id_name: string;
   name: string;
-  description: string;
-  type: 'strength' | 'agility' | 'intelligence' | 'vitality' | 'luck';
-  base_value: number;
-  max_value: number;
-  created_at: string;
-  updated_at: string;
+  descriptions: string;
+  descriptions_required?: string;
+  description?: string; // 호환성을 위해 유지
+  type?: 'strength' | 'agility' | 'intelligence' | 'vitality' | 'luck'; // 호환성을 위해 유지
+  base_value?: number; // 호환성을 위해 유지
+  max_value?: number; // 호환성을 위해 유지
+  icon?: string;
+  icon_url?: string;
+  is_toggleable: number;
+  max_lv: number;
+  created: string;
+  updated: string;
+  created_at?: string; // 호환성을 위해 유지
+  updated_at?: string; // 호환성을 위해 유지
 }
 
 // Items 타입
@@ -53,12 +62,14 @@ export interface Item {
   updated_at: string;
 }
 
-// Monsters 타입
+// Monsters 타입 - MCP API 구조에 맞게 업데이트
 export interface Monster {
   id: number;
-  ids: number;
+  ids: string;
+  id_name: string;
   name: string;
-  description: string;
+  descriptions: string;
+  description?: string; // 호환성을 위해 유지
   level: number;
   hp?: number;
   exp?: number;
@@ -67,24 +78,35 @@ export interface Monster {
   rank?: string;
   size?: string;
   element?: string;
+  armor?: string | null;
+  icon?: string;
+  // 공격 관련
   patk_min?: number;
   patk_max?: number;
   matk_min?: number;
   matk_max?: number;
+  accuracy?: number;
+  critrate?: number;
+  critdmg?: number;
+  blockpen?: number;
+  // 방어 관련
   pdef?: number;
   mdef?: number;
-  accuracy?: number;
   eva?: number;
-  critrate?: number;
+  critdef?: number;
   block?: number;
+  // 능력치
   stat_str?: number;
   stat_con?: number;
   stat_int?: number;
   stat_spr?: number;
   stat_dex?: number;
+  // 메타 데이터
   icon_url?: string;
-  created_at: string;
-  updated_at: string;
+  created: string;
+  updated: string;
+  created_at?: string; // 호환성을 위해 유지
+  updated_at?: string; // 호환성을 위해 유지
 }
 
 // Skills 타입
