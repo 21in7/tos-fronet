@@ -192,15 +192,19 @@ export default function ItemDetailPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
             <div>
               <span className="text-gray-600">ID:</span>
-              <span className="ml-2 font-mono">{item.id}</span>
+              <span className="ml-2 font-mono text-gray-900 font-semibold">{item.id}</span>
+            </div>
+            <div>
+              <span className="text-gray-600">IDS:</span>
+              <span className="ml-2 font-mono text-gray-900 font-semibold">{item.ids}</span>
             </div>
             <div>
               <span className="text-gray-600">생성일:</span>
-              <span className="ml-2">{new Date(item.created_at).toLocaleDateString('ko-KR')}</span>
+              <span className="ml-2 text-gray-800">{new Date(item.created_at).toLocaleDateString('ko-KR')}</span>
             </div>
             <div>
               <span className="text-gray-600">수정일:</span>
-              <span className="ml-2">{new Date(item.updated_at).toLocaleDateString('ko-KR')}</span>
+              <span className="ml-2 text-gray-800">{new Date(item.updated_at).toLocaleDateString('ko-KR')}</span>
             </div>
           </div>
         </div>

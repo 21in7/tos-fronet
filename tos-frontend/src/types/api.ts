@@ -43,6 +43,28 @@ export interface Attribute {
   updated_at?: string; // 호환성을 위해 유지
 }
 
+// Buffs 타입
+export interface Buff {
+  id: number;
+  ids: string;
+  id_name: string;
+  name: string;
+  descriptions: string;
+  descriptions_required?: string;
+  description?: string; // 호환성을 위해 유지
+  icon?: string;
+  icon_url?: string;
+  is_toggleable?: number;
+  max_lv?: number;
+  duration?: number; // 버프 지속시간
+  cooldown?: number; // 재사용 대기시간
+  effect_type?: string; // 효과 타입
+  created: string;
+  updated: string;
+  created_at?: string; // 호환성을 위해 유지
+  updated_at?: string; // 호환성을 위해 유지
+}
+
 // Items 타입
 export interface Item {
   id: number;

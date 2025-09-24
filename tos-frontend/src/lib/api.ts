@@ -123,6 +123,17 @@ export const attributesApi = {
   getTypes: () => apiClient.get('/attributes/types'),
 };
 
+// Buffs API
+export const buffsApi = {
+  getAll: (params?: QueryParams) => apiClient.get('/buffs', params),
+  getById: (ids: string | number) => apiClient.get(`/buffs/${ids}`),
+  create: (data: any) => apiClient.post('/buffs', data),
+  update: (ids: string | number, data: any) => apiClient.put(`/buffs/${ids}`, data),
+  delete: (ids: string | number) => apiClient.delete(`/buffs/${ids}`),
+  getStats: () => apiClient.get('/buffs/stats'),
+  getTypes: () => apiClient.get('/buffs/types'),
+};
+
 // Items API
 export const itemsApi = {
   getAll: (params?: QueryParams) => apiClient.get('/items', params),

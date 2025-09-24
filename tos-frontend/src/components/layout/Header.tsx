@@ -18,6 +18,7 @@ import ApiStatus from '@/components/common/ApiStatus';
 const navigation = [
   { name: '대시보드', href: '/', icon: Home },
   { name: '특성', href: '/attributes', icon: BarChart3 },
+  { name: '버프', href: '/buffs', icon: Shield },
   { name: '아이템', href: '/items', icon: Sword },
   { name: '몬스터', href: '/monsters', icon: Skull },
   { name: '스킬', href: '/skills', icon: Zap },
