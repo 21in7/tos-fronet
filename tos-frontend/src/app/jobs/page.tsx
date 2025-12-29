@@ -22,14 +22,14 @@ export default function JobsPage() {
     queryFn: () => jobsApi.getAll({ page: currentPage, limit }),
   });
 
-  const toggleJobSkills = async (jobId: number, jobName: string) => {
+  const toggleJobSkills = async (jobId: number) => {
     const newExpanded = new Set(expandedJobs);
-    
+
     if (expandedJobs.has(jobId)) {
       newExpanded.delete(jobId);
     } else {
       newExpanded.add(jobId);
-      
+
       // 스킬 데이터가 없으면 로드
       if (!jobSkills[jobId]) {
         try {
@@ -38,7 +38,7 @@ export default function JobsPage() {
           const skillsResponse = await skillsApi.getAll({ job_id: jobId, limit: 100 });
           console.log(`직업 ID ${jobId}의 스킬 검색 결과:`, skillsResponse);
           console.log(`찾은 스킬 개수: ${Array.isArray(skillsResponse.data) ? skillsResponse.data.length : 0}`);
-          
+
           setJobSkills(prev => ({
             ...prev,
             [jobId]: Array.isArray(skillsResponse.data) ? skillsResponse.data : []
@@ -52,7 +52,7 @@ export default function JobsPage() {
         }
       }
     }
-    
+
     setExpandedJobs(newExpanded);
   };
 
@@ -122,7 +122,7 @@ export default function JobsPage() {
                   <p className="text-sm text-gray-500 mt-1">
                     {job.description}
                   </p>
-                  
+
                   {/* Job Tree 표시 */}
                   {job.job_tree && (
                     <div className="mt-3">
@@ -134,19 +134,19 @@ export default function JobsPage() {
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="mt-3">
                     <div className="text-sm font-medium text-gray-700 mb-2">
                       요구사항:
                     </div>
                     <div className="text-sm text-gray-600">
-                      {job.requirements && typeof job.requirements === 'object' 
+                      {job.requirements && typeof job.requirements === 'object'
                         ? Object.entries(job.requirements).map(([key, value]) => (
-                            <div key={key} className="flex justify-between">
-                              <span>{key}:</span>
-                              <span>{value}</span>
-                            </div>
-                          ))
+                          <div key={key} className="flex justify-between">
+                            <span>{key}:</span>
+                            <span>{String(value)}</span>
+                          </div>
+                        ))
                         : <div className="text-gray-500">요구사항 없음</div>
                       }
                     </div>
@@ -156,21 +156,21 @@ export default function JobsPage() {
                       보너스:
                     </div>
                     <div className="text-sm text-gray-600">
-                      {job.bonuses && typeof job.bonuses === 'object' 
+                      {job.bonuses && typeof job.bonuses === 'object'
                         ? Object.entries(job.bonuses).map(([key, value]) => (
-                            <div key={key} className="flex justify-between">
-                              <span>{key}:</span>
-                              <span className="text-green-600">+{value}</span>
-                            </div>
-                          ))
+                          <div key={key} className="flex justify-between">
+                            <span>{key}:</span>
+                            <span className="text-green-600">+{String(value)}</span>
+                          </div>
+                        ))
                         : <div className="text-gray-500">보너스 없음</div>
                       }
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 pt-3 border-t border-gray-200">
                     <button
-                      onClick={() => toggleJobSkills(job.id, job.name)}
+                      onClick={() => toggleJobSkills(job.id)}
                       className="w-full flex items-center justify-center px-3 py-2 text-sm font-medium text-indigo-600 hover:text-indigo-500 hover:bg-indigo-50 rounded-md transition-colors"
                     >
                       <Zap className="w-4 h-4 mr-2" />
@@ -181,7 +181,7 @@ export default function JobsPage() {
                         <ChevronDown className="w-4 h-4 ml-2" />
                       )}
                     </button>
-                    
+
                     {expandedJobs.has(job.id) && (
                       <div className="mt-3 p-3 bg-gray-50 rounded-md">
                         <div className="text-sm font-medium text-gray-700 mb-2">

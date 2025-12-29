@@ -7,7 +7,7 @@ import { Monster } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
-import { ArrowLeft, Skull, Heart, Shield, Zap, Target, Sword } from 'lucide-react';
+import { ArrowLeft, Skull, Heart, Shield, Sword } from 'lucide-react';
 
 export default function MonsterDetailPage() {
   const params = useParams();

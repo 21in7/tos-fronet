@@ -12,13 +12,13 @@ interface GameImageProps {
   priority?: boolean;
 }
 
-export default function GameImage({ 
-  src, 
-  alt, 
-  width = 64, 
-  height = 64, 
+export default function GameImage({
+  src,
+  alt,
+  width = 64,
+  height = 64,
   className = '',
-  fallback = '/placeholder-item.png',
+  // fallback,
   type = 'item',
   priority = false
 }: GameImageProps) {
@@ -28,15 +28,15 @@ export default function GameImage({
   // URL 경로 수정 함수 (icon -> icons)
   const fixIconUrl = (url?: string): string | undefined => {
     if (!url) return url;
-    
+
     // https://r2.gihyeonofsoul.com/icon/ -> https://r2.gihyeonofsoul.com/icons/
     const fixedUrl = url.replace('/icon/', '/icons/');
-    
+
     // 디버깅용 로그 (URL이 변경된 경우만)
     if (fixedUrl !== url) {
       console.log(`🔧 URL 수정: ${url} → ${fixedUrl}`);
     }
-    
+
     return fixedUrl;
   };
 
@@ -50,7 +50,7 @@ export default function GameImage({
       setIsImageLoaded(false);
     }
   }, [fixedSrc]);
-  
+
   // 타입별 기본 아이콘 설정
   const getDefaultIcon = () => {
     switch (type) {
@@ -95,8 +95,8 @@ export default function GameImage({
 
   if (shouldShowFallback) {
     return (
-      <div 
-        className={`relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border ${className}`} 
+      <div
+        className={`relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border ${className}`}
         style={{ width, height }}
         title={`${alt} (이미지 없음)`}
       >
@@ -112,20 +112,19 @@ export default function GameImage({
         alt={alt}
         width={width}
         height={height}
-        className={`object-cover transition-opacity duration-200 ${
-          isImageLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`object-cover transition-opacity duration-200 ${isImageLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
         onError={handleImageError}
         onLoad={handleImageLoad}
         unoptimized={true} // 최적화 비활성화로 속도 개선
         priority={priority}
         loading={priority ? 'eager' : 'lazy'}
-        style={{ 
+        style={{
           objectFit: 'cover',
           backgroundColor: '#f3f4f6'
         }}
       />
-      
+
       {/* 이미지가 로드되지 않았을 때 보여줄 백그라운드 */}
       {!isImageLoaded && !imageError && (
         <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">

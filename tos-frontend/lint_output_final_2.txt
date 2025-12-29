@@ -1,0 +1,14 @@
+
+> tos-frontend@0.1.0 lint
+> eslint
+
+
+E:\develop\tos-fronet\tos-frontend\src\app\jobs\page.tsx
+  25:49  warning  '_jobName' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\components\common\ApiStatus.tsx
+  5:32  warning  'AlertCircle' is defined but never used         @typescript-eslint/no-unused-vars
+  8:11  warning  'isLoading' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+??3 problems (0 errors, 3 warnings)
+

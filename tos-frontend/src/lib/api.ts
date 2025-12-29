@@ -1,6 +1,6 @@
-import { ApiResponse, ApiError, QueryParams } from '@/types/api';
+import { ApiResponse, QueryParams } from '@/types/api';
 
-// Next.js API 프록시를 통해 CORS 문제 해결
+// Next.js rewrites를 통한 API 프록시 사용
 const API_BASE_URL = '/api';
 
 class ApiClient {
@@ -15,7 +15,7 @@ class ApiClient {
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
-    
+
     const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
@@ -25,14 +25,12 @@ class ApiClient {
     };
 
     try {
-      console.log(`🔄 API 요청: ${options.method || 'GET'} ${url}`);
       const response = await fetch(url, config);
-      
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
-        console.error(`❌ API 오류 [${response.status}]: ${url}`, errorData);
-        
+
         // 더 구체적인 에러 메시지 제공
         if (response.status === 400) {
           throw new Error(`잘못된 요청입니다: ${errorMessage}`);
@@ -46,23 +44,19 @@ class ApiClient {
       }
 
       const data = await response.json();
-      console.log(`✅ API 성공: ${url}`, data.success ? '성공' : '응답 받음');
-      
+
       // API 응답이 에러인 경우 처리
       if (data.error) {
-        console.error(`❌ API 응답 에러: ${url}`, data.error);
         throw new Error(data.error);
       }
-      
+
       return data;
     } catch (error) {
-      console.error(`💥 API 요청 실패: ${url}`, error);
-      
       // API 서버가 실행되지 않은 경우 더 친화적인 에러 메시지
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
         throw new Error('API 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.');
       }
-      
+
       throw error;
     }
   }
@@ -70,7 +64,7 @@ class ApiClient {
   // GET 요청
   async get<T>(endpoint: string, params?: QueryParams): Promise<ApiResponse<T>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
@@ -81,14 +75,12 @@ class ApiClient {
 
     const queryString = searchParams.toString();
     const url = queryString ? `${endpoint}?${queryString}` : endpoint;
-    
-    console.log('🌐 API GET 요청:', { endpoint, params, url });
 
     return this.request<T>(url, { method: 'GET' });
   }
 
   // POST 요청
-  async post<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
+  async post<T>(endpoint: string, data: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
@@ -96,7 +88,7 @@ class ApiClient {
   }
 
   // PUT 요청
-  async put<T>(endpoint: string, data: any): Promise<ApiResponse<T>> {
+  async put<T>(endpoint: string, data: unknown): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data),
@@ -116,8 +108,8 @@ export const apiClient = new ApiClient(API_BASE_URL);
 export const attributesApi = {
   getAll: (params?: QueryParams) => apiClient.get('/attributes', params),
   getById: (ids: string | number) => apiClient.get(`/attributes/${ids}`),
-  create: (data: any) => apiClient.post('/attributes', data),
-  update: (ids: string | number, data: any) => apiClient.put(`/attributes/${ids}`, data),
+  create: (data: unknown) => apiClient.post('/attributes', data),
+  update: (ids: string | number, data: unknown) => apiClient.put(`/attributes/${ids}`, data),
   delete: (ids: string | number) => apiClient.delete(`/attributes/${ids}`),
   getStats: () => apiClient.get('/attributes/stats'),
   getTypes: () => apiClient.get('/attributes/types'),
@@ -127,8 +119,8 @@ export const attributesApi = {
 export const buffsApi = {
   getAll: (params?: QueryParams) => apiClient.get('/buffs', params),
   getById: (ids: string | number) => apiClient.get(`/buffs/${ids}`),
-  create: (data: any) => apiClient.post('/buffs', data),
-  update: (ids: string | number, data: any) => apiClient.put(`/buffs/${ids}`, data),
+  create: (data: unknown) => apiClient.post('/buffs', data),
+  update: (ids: string | number, data: unknown) => apiClient.put(`/buffs/${ids}`, data),
   delete: (ids: string | number) => apiClient.delete(`/buffs/${ids}`),
   getStats: () => apiClient.get('/buffs/stats'),
   getTypes: () => apiClient.get('/buffs/types'),
@@ -138,8 +130,8 @@ export const buffsApi = {
 export const itemsApi = {
   getAll: (params?: QueryParams) => apiClient.get('/items', params),
   getById: (ids: string | number) => apiClient.get(`/items/${ids}`),
-  create: (data: any) => apiClient.post('/items', data),
-  update: (ids: string | number, data: any) => apiClient.put(`/items/${ids}`, data),
+  create: (data: unknown) => apiClient.post('/items', data),
+  update: (ids: string | number, data: unknown) => apiClient.put(`/items/${ids}`, data),
   delete: (ids: string | number) => apiClient.delete(`/items/${ids}`),
   getStats: () => apiClient.get('/items/stats'),
   getTypes: () => apiClient.get('/items/types'),
@@ -150,8 +142,8 @@ export const itemsApi = {
 export const monstersApi = {
   getAll: (params?: QueryParams) => apiClient.get('/monsters', params),
   getById: (ids: string) => apiClient.get(`/monsters/${ids}`),
-  create: (data: any) => apiClient.post('/monsters', data),
-  update: (ids: string, data: any) => apiClient.put(`/monsters/${ids}`, data),
+  create: (data: unknown) => apiClient.post('/monsters', data),
+  update: (ids: string, data: unknown) => apiClient.put(`/monsters/${ids}`, data),
   delete: (ids: string) => apiClient.delete(`/monsters/${ids}`),
   getStats: () => apiClient.get('/monsters/stats'),
 };
@@ -160,8 +152,8 @@ export const monstersApi = {
 export const skillsApi = {
   getAll: (params?: QueryParams) => apiClient.get('/skills', params),
   getById: (id: number) => apiClient.get(`/skills/${id}`),
-  create: (data: any) => apiClient.post('/skills', data),
-  update: (id: number, data: any) => apiClient.put(`/skills/${id}`, data),
+  create: (data: unknown) => apiClient.post('/skills', data),
+  update: (id: number, data: unknown) => apiClient.put(`/skills/${id}`, data),
   delete: (id: number) => apiClient.delete(`/skills/${id}`),
   getStats: () => apiClient.get('/skills/stats'),
 };
@@ -170,8 +162,8 @@ export const skillsApi = {
 export const jobsApi = {
   getAll: (params?: QueryParams) => apiClient.get('/jobs', params),
   getById: (id: number) => apiClient.get(`/jobs/${id}`),
-  create: (data: any) => apiClient.post('/jobs', data),
-  update: (id: number, data: any) => apiClient.put(`/jobs/${id}`, data),
+  create: (data: unknown) => apiClient.post('/jobs', data),
+  update: (id: number, data: unknown) => apiClient.put(`/jobs/${id}`, data),
   delete: (id: number) => apiClient.delete(`/jobs/${id}`),
   getStats: () => apiClient.get('/jobs/stats'),
 };
@@ -180,8 +172,8 @@ export const jobsApi = {
 export const mapsApi = {
   getAll: (params?: QueryParams) => apiClient.get('/maps', params),
   getById: (id: number) => apiClient.get(`/maps/${id}`),
-  create: (data: any) => apiClient.post('/maps', data),
-  update: (id: number, data: any) => apiClient.put(`/maps/${id}`, data),
+  create: (data: unknown) => apiClient.post('/maps', data),
+  update: (id: number, data: unknown) => apiClient.put(`/maps/${id}`, data),
   delete: (id: number) => apiClient.delete(`/maps/${id}`),
   getStats: () => apiClient.get('/maps/stats'),
 };

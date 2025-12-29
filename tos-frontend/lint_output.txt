@@ -1,0 +1,61 @@
+
+> tos-frontend@0.1.0 lint
+> eslint
+
+
+E:\develop\tos-fronet\tos-frontend\src\app\attributes\page.tsx
+   11:10  warning  'Edit' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+   11:16  warning  'Trash2' is defined but never used                                                                                       @typescript-eslint/no-unused-vars
+   30:6   warning  React Hook useEffect has a missing dependency: 'debouncedSearchQuery'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  107:11  warning  'hasValidDescription' is assigned a value but never used                                                                 @typescript-eslint/no-unused-vars
+  123:17  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+  123:40  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+  176:77  warning  'index' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\app\buffs\page.tsx
+   30:6   warning  React Hook useEffect has a missing dependency: 'debouncedSearchQuery'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  104:11  warning  'hasValidDescription' is assigned a value but never used                                                                 @typescript-eslint/no-unused-vars
+  136:17  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+  136:40  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+  189:57  warning  'index' is defined but never used                                                                                        @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\app\items\[id]\page.tsx
+  10:42  warning  'Coins' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\app\items\page.tsx
+   14:7   warning  'rarityColors' is assigned a value but never used                                                                        @typescript-eslint/no-unused-vars
+   39:6   warning  React Hook useEffect has a missing dependency: 'debouncedSearchQuery'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  116:11  warning  'hasValidDescription' is assigned a value but never used                                                                 @typescript-eslint/no-unused-vars
+  136:17  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+  136:40  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+
+E:\develop\tos-fronet\tos-frontend\src\app\jobs\[id]\page.tsx
+  10:32  warning  'Star' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\app\jobs\page.tsx
+  25:49  warning  'jobName' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\app\monsters\[id]\page.tsx
+  10:43  warning  'Zap' is defined but never used     @typescript-eslint/no-unused-vars
+  10:48  warning  'Target' is defined but never used  @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\app\monsters\page.tsx
+    3:33  warning  'useMemo' is defined but never used                                                                                      @typescript-eslint/no-unused-vars
+   31:6   warning  React Hook useEffect has a missing dependency: 'debouncedSearchQuery'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  139:17  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+  139:40  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                          react/no-unescaped-entities
+
+E:\develop\tos-fronet\tos-frontend\src\components\common\ApiStatus.tsx
+  8:11  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\components\common\ErrorBoundary.tsx
+  25:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+E:\develop\tos-fronet\tos-frontend\src\components\common\GameImage.tsx
+  21:3  warning  'fallback' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+E:\develop\tos-fronet\tos-frontend\src\hooks\useImageCache.ts
+  96:10  warning  'cacheImage' is defined but never used  @typescript-eslint/no-unused-vars
+
+??30 problems (9 errors, 21 warnings)
+

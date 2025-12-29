@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   images: {
     // 외부 이미지 도메인 허용
     remotePatterns: [
@@ -25,6 +26,17 @@ const nextConfig: NextConfig = {
           { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
           { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
         ],
+      },
+    ];
+  },
+  // API 프록시 설정
+  async rewrites() {
+    const apiServerUrl = process.env.API_SERVER_URL || 'http://192.168.50.224:3000';
+
+    return [
+      {
+        source: '/api/:path*',
+        destination: `${apiServerUrl}/api/:path*`,
       },
     ];
   },

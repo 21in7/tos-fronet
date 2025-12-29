@@ -7,7 +7,7 @@ import { Job, Skill } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
-import { ArrowLeft, Briefcase, Star, Users, Zap } from 'lucide-react';
+import { ArrowLeft, Briefcase, Users, Zap } from 'lucide-react';
 
 export default function JobDetailPage() {
   const params = useParams();
@@ -67,13 +67,13 @@ export default function JobDetailPage() {
   const skills = skillsData?.data as Skill[] || [];
 
   // 디버깅: API 응답 데이터 확인
-  console.log('🔍 직업 상세 데이터:', { 
-    jobId, 
-    data, 
+  console.log('🔍 직업 상세 데이터:', {
+    jobId,
+    data,
     jobsArray,
     foundJob: jobsArray.find(j => j.id.toString() === jobId),
-    job, 
-    skillsCount: skills.length 
+    job,
+    skillsCount: skills.length
   });
 
   if (!job) {
@@ -162,7 +162,7 @@ export default function JobDetailPage() {
               {Object.entries(job.requirements).map(([key, value]) => (
                 <div key={key} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                   <span className="text-sm font-medium text-gray-700">{key}</span>
-                  <span className="text-sm font-semibold text-gray-900">{value}</span>
+                  <span className="text-sm font-semibold text-gray-900">{String(value)}</span>
                 </div>
               ))}
             </div>
@@ -177,7 +177,7 @@ export default function JobDetailPage() {
               {Object.entries(job.bonuses).map(([key, value]) => (
                 <div key={key} className="flex justify-between items-center p-3 bg-green-50 rounded-lg border border-green-200">
                   <span className="text-sm font-medium text-gray-700">{key}</span>
-                  <span className="text-sm font-semibold text-green-600">+{value}</span>
+                  <span className="text-sm font-semibold text-green-600">+{String(value)}</span>
                 </div>
               ))}
             </div>
@@ -194,8 +194,8 @@ export default function JobDetailPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {skills.map((skill) => (
-                <div 
-                  key={skill.id} 
+                <div
+                  key={skill.id}
                   onClick={() => router.push(`/skills/${skill.id}`)}
                   className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors cursor-pointer"
                 >

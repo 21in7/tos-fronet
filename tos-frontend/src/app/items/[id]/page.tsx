@@ -7,7 +7,7 @@ import { Item } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
-import { ArrowLeft, Sword, Star, Weight, Coins, Shield, Info } from 'lucide-react';
+import { ArrowLeft, Sword, Star, Weight, Shield, Info } from 'lucide-react';
 
 export default function ItemDetailPage() {
   const params = useParams();
@@ -120,7 +120,7 @@ export default function ItemDetailPage() {
                 </span>
               )}
             </div>
-            
+
             {/* 설명 */}
             {item.descriptions && (
               <div className="mb-6 p-4 bg-gray-50 rounded-lg">

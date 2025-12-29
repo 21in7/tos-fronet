@@ -34,10 +34,10 @@ export function useImageCache(src?: string) {
     // CORS 문제로 인해 직접 fetch 대신 Next.js Image 컴포넌트에 의존
     // 캐시는 브라우저의 기본 캐싱에 의존하고, 로컬 스토리지에는 URL만 저장
     setCachedSrc(src);
-    
+
     // 로컬 스토리지에 이미지 URL 캐시 정보만 저장 (실제 이미지 데이터는 저장하지 않음)
     cacheImageUrl(src);
-    
+
     setIsLoading(false);
   }, [src]);
 
@@ -51,7 +51,7 @@ function getCachedImage(src: string): string | null {
 
     const parsedCache: CachedImage[] = JSON.parse(cache);
     const cached = parsedCache.find(item => item.src === src);
-    
+
     if (!cached) return null;
 
     // 만료 확인
@@ -71,10 +71,10 @@ function cacheImageUrl(src: string) {
   try {
     const cache = localStorage.getItem(CACHE_KEY);
     const parsedCache: CachedImage[] = cache ? JSON.parse(cache) : [];
-    
+
     // 기존 캐시 제거
     const filteredCache = parsedCache.filter(item => item.src !== src);
-    
+
     // 새 캐시 추가 (URL만 저장)
     const newCache = [
       ...filteredCache,
@@ -93,31 +93,31 @@ function cacheImageUrl(src: string) {
   }
 }
 
-function cacheImage(src: string, dataUrl: string) {
-  try {
-    const cache = localStorage.getItem(CACHE_KEY);
-    const parsedCache: CachedImage[] = cache ? JSON.parse(cache) : [];
-    
-    // 기존 캐시 제거
-    const filteredCache = parsedCache.filter(item => item.src !== src);
-    
-    // 새 캐시 추가
-    const newCache = [
-      ...filteredCache,
-      { src, dataUrl, timestamp: Date.now() }
-    ];
-
-    // 캐시 크기 제한 (최대 50개)
-    if (newCache.length > 50) {
-      newCache.sort((a, b) => b.timestamp - a.timestamp);
-      newCache.splice(50);
-    }
-
-    localStorage.setItem(CACHE_KEY, JSON.stringify(newCache));
-  } catch (error) {
-    console.error('캐시 저장 실패:', error);
-  }
-}
+// function cacheImage(src: string, dataUrl: string) {
+//   try {
+//     const cache = localStorage.getItem(CACHE_KEY);
+//     const parsedCache: CachedImage[] = cache ? JSON.parse(cache) : [];
+//     
+//     // 기존 캐시 제거
+//     const filteredCache = parsedCache.filter(item => item.src !== src);
+//     
+//     // 새 캐시 추가
+//     const newCache = [
+//       ...filteredCache,
+//       { src, dataUrl, timestamp: Date.now() }
+//     ];
+// 
+//     // 캐시 크기 제한 (최대 50개)
+//     if (newCache.length > 50) {
+//       newCache.sort((a, b) => b.timestamp - a.timestamp);
+//       newCache.splice(50);
+//     }
+// 
+//     localStorage.setItem(CACHE_KEY, JSON.stringify(newCache));
+//   } catch (error) {
+//     console.error('캐시 저장 실패:', error);
+//   }
+// }
 
 function removeCachedImage(src: string) {
   try {
@@ -141,7 +141,7 @@ export function cleanImageCache() {
     const parsedCache: CachedImage[] = JSON.parse(cache);
     const now = Date.now();
     const validCache = parsedCache.filter(item => now - item.timestamp <= CACHE_EXPIRY);
-    
+
     localStorage.setItem(CACHE_KEY, JSON.stringify(validCache));
   } catch (error) {
     console.error('캐시 정리 실패:', error);

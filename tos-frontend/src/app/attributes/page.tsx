@@ -8,7 +8,7 @@ import { Attribute } from '@/types/api';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import Pagination from '@/components/common/Pagination';
-import { Edit, Trash2, Search, X, ExternalLink, TrendingUp, Target } from 'lucide-react';
+import { Search, X, ExternalLink, TrendingUp, Target } from 'lucide-react';
 
 export default function AttributesPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +27,7 @@ export default function AttributesPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [inputValue]); // debouncedSearchQuery 의존성 제거로 무한루프 방지
+  }, [inputValue, debouncedSearchQuery]);
 
   // 검색어 변경 핸들러 - useCallback으로 메모이제이션
   const handleSearchChange = useCallback((query: string) => {
@@ -47,30 +47,30 @@ export default function AttributesPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['attributes', currentPage, limit, debouncedSearchQuery],
-    queryFn: () => attributesApi.getAll({ 
-      page: currentPage, 
+    queryFn: () => attributesApi.getAll({
+      page: currentPage,
       limit,
-      search: debouncedSearchQuery || undefined 
+      search: debouncedSearchQuery || undefined
     }),
   });
 
   // 포커스 유지를 위한 useEffect - useQuery 이후에 배치
   useEffect(() => {
     // 검색어가 있고, 로딩이 완료되었을 때, 포커스가 검색 필드에 없다면 복원
-    if (searchInputRef.current && 
-        debouncedSearchQuery && 
-        !isLoading && 
-        document.activeElement !== searchInputRef.current &&
-        document.activeElement?.tagName !== 'INPUT' && // 다른 input에 포커스가 있지 않을 때만
-        document.activeElement?.tagName !== 'BUTTON') { // 버튼에 포커스가 있지 않을 때만
-      
+    if (searchInputRef.current &&
+      debouncedSearchQuery &&
+      !isLoading &&
+      document.activeElement !== searchInputRef.current &&
+      document.activeElement?.tagName !== 'INPUT' && // 다른 input에 포커스가 있지 않을 때만
+      document.activeElement?.tagName !== 'BUTTON') { // 버튼에 포커스가 있지 않을 때만
+
       const timer = setTimeout(() => {
         // 검색 입력 필드가 여전히 존재하고 화면에 보이는지 확인
         if (searchInputRef.current && searchInputRef.current.offsetParent !== null) {
           searchInputRef.current.focus();
         }
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [debouncedSearchQuery, isLoading]);
@@ -104,12 +104,10 @@ export default function AttributesPage() {
   const attributes = allAttributes?.filter(attribute => {
     // 기본 정보가 있어야 함
     const hasName = attribute.name && attribute.name.trim() !== '';
-    const hasValidDescription = attribute.description && attribute.description.trim() !== '';
-    
     // 필터링 조건: 이름이 있어야 함
     return hasName;
   });
-  
+
   const pagination = data?.pagination;
 
   return (
@@ -120,7 +118,7 @@ export default function AttributesPage() {
           <p className="mt-1 text-sm text-gray-500">
             {debouncedSearchQuery ? (
               <>
-                "{debouncedSearchQuery}"에 대한 검색 결과입니다.
+                &quot;{debouncedSearchQuery}&quot;에 대한 검색 결과입니다.
                 {allAttributes && attributes && (
                   <span className="ml-2 text-xs text-gray-400">
                     ({attributes.length}개 발견)
@@ -138,7 +136,7 @@ export default function AttributesPage() {
               </>
             )}
           </p>
-          
+
           {/* 검색바 */}
           <div className="mt-6">
             <div className="relative max-w-md">
@@ -173,7 +171,7 @@ export default function AttributesPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {attributes && attributes.length > 0 ? attributes.map((attribute, index) => {
+          {attributes && attributes.length > 0 ? attributes.map((attribute) => {
             // 타입별 색상 및 아이콘 설정
             const getTypeColor = (type: string) => {
               switch (type) {
@@ -203,7 +201,7 @@ export default function AttributesPage() {
                       <span className="text-lg">{typeStyle.icon}</span>
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <Link href={`/attributes/${attribute.ids || attribute.id}`}>
@@ -215,7 +213,7 @@ export default function AttributesPage() {
                         <ExternalLink className="w-4 h-4" />
                       </Link>
                     </div>
-                    
+
                     {attribute.type && (
                       <div className="mt-1">
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${typeStyle.bg} ${typeStyle.text} border ${typeStyle.border}`}>
@@ -223,11 +221,11 @@ export default function AttributesPage() {
                         </span>
                       </div>
                     )}
-                    
+
                     <p className="text-sm text-gray-500 mt-2">
                       {attribute.descriptions || attribute.description || '설명이 없습니다.'}
                     </p>
-                    
+
                     <div className="mt-3 space-y-2">
                       {attribute.max_lv && (
                         <div className="flex items-center text-sm text-gray-600">
@@ -255,12 +253,12 @@ export default function AttributesPage() {
             <div className="col-span-full text-center py-12">
               <div className="text-gray-500 text-lg">
                 {debouncedSearchQuery ? (
-                  allAttributes && allAttributes.length > 0 
+                  allAttributes && allAttributes.length > 0
                     ? `"${debouncedSearchQuery}"에 대한 검색 결과가 없습니다`
                     : `"${debouncedSearchQuery}"에 대한 검색 결과가 없습니다`
                 ) : (
-                  allAttributes && allAttributes.length > 0 
-                    ? '조건에 맞는 특성이 없습니다' 
+                  allAttributes && allAttributes.length > 0
+                    ? '조건에 맞는 특성이 없습니다'
                     : '특성이 없습니다'
                 )}
               </div>
@@ -268,8 +266,8 @@ export default function AttributesPage() {
                 {debouncedSearchQuery ? (
                   '다른 검색어로 시도해보세요.'
                 ) : (
-                  allAttributes && allAttributes.length > 0 
-                    ? '모든 특성이 필터링되어 표시할 특성이 없습니다.' 
+                  allAttributes && allAttributes.length > 0
+                    ? '모든 특성이 필터링되어 표시할 특성이 없습니다.'
                     : '데이터베이스에 특성 데이터를 추가해주세요.'
                 )}
               </div>

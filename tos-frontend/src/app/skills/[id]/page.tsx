@@ -171,7 +171,7 @@ export default function SkillDetailPage() {
               {Object.entries(skill.effects).map(([key, value]) => (
                 <div key={key} className="flex justify-between items-center p-3 bg-yellow-50 rounded-lg border border-yellow-200">
                   <span className="text-sm font-medium text-gray-700">{key}</span>
-                  <span className="text-sm font-semibold text-yellow-700">{value}</span>
+                  <span className="text-sm font-semibold text-yellow-700">{String(value)}</span>
                 </div>
               ))}
             </div>
@@ -186,7 +186,7 @@ export default function SkillDetailPage() {
               {Object.entries(skill.requirements).map(([key, value]) => (
                 <div key={key} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
                   <span className="text-sm font-medium text-gray-700">{key}</span>
-                  <span className="text-sm font-semibold text-gray-900">{value}</span>
+                  <span className="text-sm font-semibold text-gray-900">{String(value)}</span>
                 </div>
               ))}
             </div>

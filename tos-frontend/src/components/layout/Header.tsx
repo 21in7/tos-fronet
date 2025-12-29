@@ -3,15 +3,15 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  Home, 
-  Sword, 
-  Shield, 
-  Skull, 
-  Zap, 
-  Briefcase, 
-  Map, 
-  BarChart3 
+import {
+  Home,
+  Sword,
+  Shield,
+  Skull,
+  Zap,
+  Briefcase,
+  Map,
+  BarChart3
 } from 'lucide-react';
 import ApiStatus from '@/components/common/ApiStatus';
 
@@ -24,6 +24,7 @@ const navigation = [
   { name: '스킬', href: '/skills', icon: Zap },
   { name: '직업', href: '/jobs', icon: Briefcase },
   { name: '맵', href: '/maps', icon: Map },
+  { name: '플래너', href: '/planner', icon: Briefcase },
 ];
 
 export default function Header() {
@@ -87,11 +88,10 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                      isActive
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${isActive
                         ? 'border-indigo-500 text-gray-900'
                         : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                    }`}
+                      }`}
                   >
                     <item.icon className="w-4 h-4 mr-2" />
                     {item.name}

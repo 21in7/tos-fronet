@@ -21,7 +21,7 @@ export interface ApiError {
   timestamp: string;
 }
 
-// Attributes 타입 - 새로운 JSON 구조에 맞게 업데이트
+// Attributes 타입
 export interface Attribute {
   id: number;
   ids: string;
@@ -87,10 +87,10 @@ export interface Equipment {
   anvil_def: string;
   anvil_price: string;
   transcend_price: string;
-  bonuses: any[];
+  bonuses: unknown[];
 }
 
-// Items 타입 - 새로운 JSON 구조에 맞게 업데이트
+// Items 타입
 export interface Item {
   id: number;
   ids: string;
@@ -110,7 +110,7 @@ export interface Item {
   rarity?: string;
   level?: number;
   price?: number;
-  stats?: Record<string, any>;
+  stats?: Record<string, unknown>;
   stackable?: boolean;
   created: string;
   updated: string;
@@ -118,7 +118,7 @@ export interface Item {
   updated_at?: string; // 호환성을 위해 유지
 }
 
-// Monsters 타입 - MCP API 구조에 맞게 업데이트
+// Monsters 타입
 export interface Monster {
   id: number;
   ids: string;
@@ -179,8 +179,8 @@ export interface Skill {
   damage?: number;
   range?: number;
   element?: string;
-  effects?: Record<string, any>;
-  requirements?: Record<string, any>;
+  effects?: Record<string, unknown>;
+  requirements?: Record<string, unknown>;
   job_id?: number;
   icon_url?: string;
   created_at: string;
@@ -197,8 +197,8 @@ export interface Job {
   type?: string;
   rank?: string;
   job_tree?: string;
-  requirements?: Record<string, any>;
-  bonuses?: Record<string, any>;
+  requirements?: Record<string, unknown>;
+  bonuses?: Record<string, unknown>;
   icon_url?: string;
   created_at: string;
   updated_at: string;
@@ -212,7 +212,7 @@ export interface Map {
   description: string;
   level: number;
   monsters: number[];
-  rewards: Record<string, any>;
+  rewards: Record<string, unknown>;
   icon_url?: string;
   created_at: string;
   updated_at: string;
@@ -229,10 +229,12 @@ export interface DashboardStats {
   maps: number;
   achievements: number;
   total: number;
+  version?: string;
 }
 
 // 쿼리 파라미터 타입
 export interface QueryParams {
+  [key: string]: string | number | boolean | undefined;
   page?: number;
   limit?: number;
   type?: string;

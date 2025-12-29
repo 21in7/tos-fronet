@@ -27,7 +27,7 @@ export default function BuffsPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [inputValue]); // debouncedSearchQuery 의존성 제거로 무한루프 방지
+  }, [inputValue, debouncedSearchQuery]);
 
   // 검색어 변경 핸들러 - useCallback으로 메모이제이션
   const handleSearchChange = useCallback((query: string) => {
@@ -47,30 +47,30 @@ export default function BuffsPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['buffs', currentPage, limit, debouncedSearchQuery],
-    queryFn: () => buffsApi.getAll({ 
-      page: currentPage, 
+    queryFn: () => buffsApi.getAll({
+      page: currentPage,
       limit,
-      search: debouncedSearchQuery || undefined 
+      search: debouncedSearchQuery || undefined
     }),
   });
 
   // 포커스 유지를 위한 useEffect - useQuery 이후에 배치
   useEffect(() => {
     // 검색어가 있고, 로딩이 완료되었을 때, 포커스가 검색 필드에 없다면 복원
-    if (searchInputRef.current && 
-        debouncedSearchQuery && 
-        !isLoading && 
-        document.activeElement !== searchInputRef.current &&
-        document.activeElement?.tagName !== 'INPUT' && // 다른 input에 포커스가 있지 않을 때만
-        document.activeElement?.tagName !== 'BUTTON') { // 버튼에 포커스가 있지 않을 때만
-      
+    if (searchInputRef.current &&
+      debouncedSearchQuery &&
+      !isLoading &&
+      document.activeElement !== searchInputRef.current &&
+      document.activeElement?.tagName !== 'INPUT' && // 다른 input에 포커스가 있지 않을 때만
+      document.activeElement?.tagName !== 'BUTTON') { // 버튼에 포커스가 있지 않을 때만
+
       const timer = setTimeout(() => {
         // 검색 입력 필드가 여전히 존재하고 화면에 보이는지 확인
         if (searchInputRef.current && searchInputRef.current.offsetParent !== null) {
           searchInputRef.current.focus();
         }
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [debouncedSearchQuery, isLoading]);
@@ -101,12 +101,10 @@ export default function BuffsPage() {
   const buffs = allBuffs?.filter(buff => {
     // 기본 정보가 있어야 함
     const hasName = buff.name && buff.name.trim() !== '';
-    const hasValidDescription = buff.descriptions && buff.descriptions.trim() !== '';
-    
     // 필터링 조건: 이름이 있어야 함
     return hasName;
   });
-  
+
   const pagination = data?.pagination;
 
   // 효과 타입별 색상 및 아이콘 설정
@@ -133,7 +131,7 @@ export default function BuffsPage() {
           <p className="mt-1 text-sm text-gray-500">
             {debouncedSearchQuery ? (
               <>
-                "{debouncedSearchQuery}"에 대한 검색 결과입니다.
+                &quot;{debouncedSearchQuery}&quot;에 대한 검색 결과입니다.
                 {allBuffs && buffs && (
                   <span className="ml-2 text-xs text-gray-400">
                     ({buffs.length}개 발견)
@@ -151,7 +149,7 @@ export default function BuffsPage() {
               </>
             )}
           </p>
-          
+
           {/* 검색바 */}
           <div className="mt-6">
             <div className="relative max-w-md">
@@ -186,7 +184,7 @@ export default function BuffsPage() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {buffs && buffs.length > 0 ? buffs.map((buff, index) => {
+          {buffs && buffs.length > 0 ? buffs.map((buff) => {
             const effectStyle = getEffectTypeStyle(buff.effect_type);
 
             return (
@@ -202,7 +200,7 @@ export default function BuffsPage() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <Link href={`/buffs/${buff.ids || buff.id}`}>
@@ -214,7 +212,7 @@ export default function BuffsPage() {
                         <ExternalLink className="w-4 h-4" />
                       </Link>
                     </div>
-                    
+
                     {buff.effect_type && (
                       <div className="mt-1">
                         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${effectStyle.bg} ${effectStyle.text} border ${effectStyle.border}`}>
@@ -222,11 +220,11 @@ export default function BuffsPage() {
                         </span>
                       </div>
                     )}
-                    
+
                     <p className="text-sm text-gray-500 mt-2">
                       {buff.descriptions || buff.description || '설명이 없습니다.'}
                     </p>
-                    
+
                     <div className="mt-3 space-y-2">
                       {buff.duration && (
                         <div className="flex items-center text-sm text-gray-600">
@@ -254,12 +252,12 @@ export default function BuffsPage() {
             <div className="col-span-full text-center py-12">
               <div className="text-gray-500 text-lg">
                 {debouncedSearchQuery ? (
-                  allBuffs && allBuffs.length > 0 
+                  allBuffs && allBuffs.length > 0
                     ? `"${debouncedSearchQuery}"에 대한 검색 결과가 없습니다`
                     : `"${debouncedSearchQuery}"에 대한 검색 결과가 없습니다`
                 ) : (
-                  allBuffs && allBuffs.length > 0 
-                    ? '조건에 맞는 버프가 없습니다' 
+                  allBuffs && allBuffs.length > 0
+                    ? '조건에 맞는 버프가 없습니다'
                     : '버프가 없습니다'
                 )}
               </div>
@@ -267,8 +265,8 @@ export default function BuffsPage() {
                 {debouncedSearchQuery ? (
                   '다른 검색어로 시도해보세요.'
                 ) : (
-                  allBuffs && allBuffs.length > 0 
-                    ? '모든 버프가 필터링되어 표시할 버프가 없습니다.' 
+                  allBuffs && allBuffs.length > 0
+                    ? '모든 버프가 필터링되어 표시할 버프가 없습니다.'
                     : '데이터베이스에 버프 데이터를 추가해주세요.'
                 )}
               </div>

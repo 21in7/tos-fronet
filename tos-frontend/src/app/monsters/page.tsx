@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { monstersApi } from '@/lib/api';
@@ -28,7 +28,7 @@ export default function MonstersPage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [inputValue]); // debouncedSearchQuery 의존성 제거로 무한루프 방지
+  }, [inputValue, debouncedSearchQuery]);
 
   // 검색어 변경 핸들러 - useCallback으로 메모이제이션
   const handleSearchChange = useCallback((query: string) => {
@@ -48,30 +48,30 @@ export default function MonstersPage() {
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['monsters', currentPage, limit, debouncedSearchQuery],
-    queryFn: () => monstersApi.getAll({ 
-      page: currentPage, 
+    queryFn: () => monstersApi.getAll({
+      page: currentPage,
       limit,
-      search: debouncedSearchQuery || undefined 
+      search: debouncedSearchQuery || undefined
     }),
   });
 
   // 포커스 유지를 위한 useEffect - useQuery 이후에 배치
   useEffect(() => {
     // 검색어가 있고, 로딩이 완료되었을 때, 포커스가 검색 필드에 없다면 복원
-    if (searchInputRef.current && 
-        debouncedSearchQuery && 
-        !isLoading && 
-        document.activeElement !== searchInputRef.current &&
-        document.activeElement?.tagName !== 'INPUT' && // 다른 input에 포커스가 있지 않을 때만
-        document.activeElement?.tagName !== 'BUTTON') { // 버튼에 포커스가 있지 않을 때만
-      
+    if (searchInputRef.current &&
+      debouncedSearchQuery &&
+      !isLoading &&
+      document.activeElement !== searchInputRef.current &&
+      document.activeElement?.tagName !== 'INPUT' && // 다른 input에 포커스가 있지 않을 때만
+      document.activeElement?.tagName !== 'BUTTON') { // 버튼에 포커스가 있지 않을 때만
+
       const timer = setTimeout(() => {
         // 검색 입력 필드가 여전히 존재하고 화면에 보이는지 확인
         if (searchInputRef.current && searchInputRef.current.offsetParent !== null) {
           searchInputRef.current.focus();
         }
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [debouncedSearchQuery, isLoading]);
@@ -106,26 +106,26 @@ export default function MonstersPage() {
   const monsters = allMonsters?.filter(monster => {
     // 기본 정보가 있어야 함
     const hasName = monster.name && monster.name.trim() !== '';
-    const hasValidDescription = monster.descriptions && 
-                               monster.descriptions.trim() !== '' && 
-                               monster.descriptions !== '몬스터';
-    
+    const hasValidDescription = monster.descriptions &&
+      monster.descriptions.trim() !== '' &&
+      monster.descriptions !== '몬스터';
+
     // 스탯이 의미있어야 함
     const hasValidLevel = monster.level && monster.level > 0;
     const hasValidHp = monster.hp && monster.hp > 0;
     const hasValidExp = monster.exp && monster.exp > 0;
-    const hasValidAttack = (monster.patk_min && monster.patk_min > 0) || 
-                          (monster.matk_min && monster.matk_min > 0);
-    
+    const hasValidAttack = (monster.patk_min && monster.patk_min > 0) ||
+      (monster.matk_min && monster.matk_min > 0);
+
     // 숨김 처리된 몬스터들 제외 (HiddenTrigger, upinis 등)
-    const isNotHidden = !monster.id_name?.includes('Hidden') && 
-                       !monster.id_name?.includes('upinis') &&
-                       !monster.id_name?.includes('Trigger');
-    
+    const isNotHidden = !monster.id_name?.includes('Hidden') &&
+      !monster.id_name?.includes('upinis') &&
+      !monster.id_name?.includes('Trigger');
+
     // 필터링 조건: 이름이 있고, 숨김이 아니며, 최소한 레벨이나 HP, 경험치 중 하나는 있어야 함
     return hasName && isNotHidden && (hasValidLevel || hasValidHp || hasValidExp || hasValidDescription || hasValidAttack);
   });
-  
+
   const pagination = data?.pagination;
 
   return (
@@ -136,7 +136,7 @@ export default function MonstersPage() {
           <p className="mt-1 text-sm text-gray-500">
             {debouncedSearchQuery ? (
               <>
-                "{debouncedSearchQuery}"에 대한 검색 결과입니다.
+                &quot;{debouncedSearchQuery}&quot;에 대한 검색 결과입니다.
                 {allMonsters && monsters && (
                   <span className="ml-2 text-xs text-gray-400">
                     ({monsters.length}개 발견)
@@ -154,7 +154,7 @@ export default function MonstersPage() {
               </>
             )}
           </p>
-          
+
           {/* 검색바 */}
           <div className="mt-6">
             <div className="relative max-w-md">
@@ -243,12 +243,12 @@ export default function MonstersPage() {
             <div className="col-span-full text-center py-12">
               <div className="text-gray-500 text-lg">
                 {debouncedSearchQuery ? (
-                  allMonsters && allMonsters.length > 0 
+                  allMonsters && allMonsters.length > 0
                     ? `"${debouncedSearchQuery}"에 대한 검색 결과가 없습니다`
                     : `"${debouncedSearchQuery}"에 대한 검색 결과가 없습니다`
                 ) : (
-                  allMonsters && allMonsters.length > 0 
-                    ? '조건에 맞는 몬스터가 없습니다' 
+                  allMonsters && allMonsters.length > 0
+                    ? '조건에 맞는 몬스터가 없습니다'
                     : '몬스터가 없습니다'
                 )}
               </div>
@@ -256,8 +256,8 @@ export default function MonstersPage() {
                 {debouncedSearchQuery ? (
                   '다른 검색어로 시도해보세요.'
                 ) : (
-                  allMonsters && allMonsters.length > 0 
-                    ? '모든 몬스터가 필터링되어 표시할 몬스터가 없습니다.' 
+                  allMonsters && allMonsters.length > 0
+                    ? '모든 몬스터가 필터링되어 표시할 몬스터가 없습니다.'
                     : '데이터베이스에 몬스터 데이터를 추가해주세요.'
                 )}
               </div>

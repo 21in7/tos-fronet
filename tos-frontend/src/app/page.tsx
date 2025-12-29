@@ -6,12 +6,12 @@ import { DashboardStats } from '@/types/api';
 import StatsCard from '@/components/dashboard/StatsCard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
-import { 
-  BarChart3, 
-  Sword, 
-  Skull, 
-  Zap, 
-  Briefcase, 
+import {
+  BarChart3,
+  Sword,
+  Skull,
+  Zap,
+  Briefcase,
   Map,
   Shield,
   Trophy
@@ -60,6 +60,12 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <StatsCard
+            title="현재 게임 버전"
+            value={stats?.version || '확인 중...'}
+            icon={BarChart3}
+            color="purple"
+          />
           <StatsCard
             title="총 특성 수"
             value={stats?.attributes || 0}

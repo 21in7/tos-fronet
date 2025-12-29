@@ -2,10 +2,10 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { dashboardApi } from '@/lib/api';
-import { CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { CheckCircle, XCircle } from 'lucide-react';
 
 export default function ApiStatus() {
-  const { data, isLoading, error } = useQuery({
+  const { error } = useQuery({
     queryKey: ['api-status'],
     queryFn: () => dashboardApi.getStatus(),
     retry: false,
@@ -15,14 +15,6 @@ export default function ApiStatus() {
     refetchOnMount: false, // 마운트 시 재요청 비활성화
   });
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center space-x-2 text-gray-500">
-        <AlertCircle className="w-4 h-4 animate-pulse" />
-        <span className="text-sm">API 연결 확인 중...</span>
-      </div>
-    );
-  }
 
   if (error) {
     return (
