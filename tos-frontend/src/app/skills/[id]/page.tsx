@@ -9,6 +9,17 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import { ArrowLeft, Zap, Clock, Target, Star, Book } from 'lucide-react';
 
+const formatDate = (dateString?: string) => {
+  if (!dateString) return 'N/A';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid Date';
+    return date.toLocaleDateString('ko-KR');
+  } catch (e) {
+    return 'Error';
+  }
+};
+
 export default function SkillDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -207,11 +218,15 @@ export default function SkillDetailPage() {
             </div>
             <div>
               <span className="text-gray-600">생성일:</span>
-              <span className="ml-2 text-gray-800">{new Date(skill.created_at).toLocaleDateString('ko-KR')}</span>
+              <span className="ml-2 text-gray-800">
+                {formatDate(skill.created || skill.created_at)}
+              </span>
             </div>
             <div>
               <span className="text-gray-600">수정일:</span>
-              <span className="ml-2 text-gray-800">{new Date(skill.updated_at).toLocaleDateString('ko-KR')}</span>
+              <span className="ml-2 text-gray-800">
+                {formatDate(skill.updated || skill.updated_at)}
+              </span>
             </div>
           </div>
         </div>

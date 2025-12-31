@@ -1,0 +1,19 @@
+npm warn Unknown user config "python". This will stop working in the next major version of npm.
+
+> tos-frontend@0.1.0 build
+> next build
+
+   ??Next.js 15.5.3
+
+   Creating an optimized production build ...
+ ??Compiled successfully in 1767ms
+   Linting and checking validity of types ...
+
+./src/components/planner/SkillTooltip.tsx
+4:10  Warning: 'skillsApi' is defined but never used.  @typescript-eslint/no-unused-vars
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/app/api-reference/config/eslint#disabling-rules
+   Collecting page data ...
+
+> Build error occurred
+[Error: Page "/attributes/[id]" is missing "generateStaticParams()" so it cannot be used with "output: export" config.]

@@ -186,6 +186,8 @@ export interface Skill {
   requirements?: Record<string, unknown>;
   job_id?: number;
   icon_url?: string;
+  created?: string;
+  updated?: string;
   created_at: string;
   updated_at: string;
 }
