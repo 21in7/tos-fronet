@@ -171,8 +171,11 @@ export interface Skill {
   ids: number;
   name: string;
   description: string;
+  descriptions?: string; // API Actual Response
   type?: string;
   level?: number;
+  max_level?: number; // 메인 Max Level 필드 (예상)
+  max_lv?: number; // 대체 Max Level 필드
   cooldown?: number;
   cost?: number;
   mana_cost?: number;

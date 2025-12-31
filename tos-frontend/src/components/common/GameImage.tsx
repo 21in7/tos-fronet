@@ -8,7 +8,7 @@ interface GameImageProps {
   height?: number;
   className?: string;
   fallback?: string;
-  type?: 'item' | 'monster' | 'skill' | 'job' | 'map';
+  type?: 'item' | 'monster' | 'skill' | 'job' | 'map' | 'attribute';
   priority?: boolean;
 }
 
@@ -62,6 +62,8 @@ export default function GameImage({
         return '⚡';
       case 'job':
         return '👤';
+      case 'attribute':
+        return '💎';
       case 'item':
       default:
         return '📦';
@@ -96,7 +98,7 @@ export default function GameImage({
   if (shouldShowFallback) {
     return (
       <div
-        className={`relative overflow-hidden rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border ${className}`}
+        className={`relative overflow-hidden rounded-lg bg-gray-800/50 flex items-center justify-center border border-gray-700/50 ${className}`}
         style={{ width, height }}
         title={`${alt} (이미지 없음)`}
       >
@@ -121,13 +123,13 @@ export default function GameImage({
         loading={priority ? 'eager' : 'lazy'}
         style={{
           objectFit: 'cover',
-          backgroundColor: '#f3f4f6'
+          // backgroundColor: '#f3f4f6' // Removed to fix white corners
         }}
       />
 
       {/* 이미지가 로드되지 않았을 때 보여줄 백그라운드 */}
       {!isImageLoaded && !imageError && (
-        <div className="absolute inset-0 bg-gray-100 flex items-center justify-center">
+        <div className="absolute inset-0 bg-gray-800/50 flex items-center justify-center">
           <span className="text-gray-400 text-lg animate-pulse">{getDefaultIcon()}</span>
         </div>
       )}
