@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: 'export',
   images: {
+    unoptimized: true,
     // 외부 이미지 도메인 허용
     remotePatterns: [
       {
@@ -16,7 +17,7 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  // 외부 API 호출을 위한 설정
+  // 정적 내보내기에서는 rewrites가 작동하지 않으므로 headers만 설정 (개발 환경용)
   async headers() {
     return [
       {
@@ -26,17 +27,6 @@ const nextConfig: NextConfig = {
           { key: 'Access-Control-Allow-Methods', value: 'GET, POST, PUT, DELETE, OPTIONS' },
           { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
         ],
-      },
-    ];
-  },
-  // API 프록시 설정
-  async rewrites() {
-    const apiServerUrl = process.env.API_SERVER_URL || 'http://192.168.50.224:3000';
-
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${apiServerUrl}/api/:path*`,
       },
     ];
   },

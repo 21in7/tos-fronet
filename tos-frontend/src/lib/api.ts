@@ -1,7 +1,9 @@
 import { ApiResponse, QueryParams } from '@/types/api';
 
-// Next.js rewrites를 통한 API 프록시 사용
-const API_BASE_URL = '/api';
+// Next.js rewrites를 통한 API 프록시 사용 (개발 환경) 또는 직접 호출 (정적 배포)
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+  ? `${process.env.NEXT_PUBLIC_API_URL}/api`
+  : '/api';
 
 class ApiClient {
   private baseURL: string;

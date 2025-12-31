@@ -31,7 +31,11 @@ export default function ChallengeCalendar() {
             try {
                 const isEvenMonth = month % 2 === 0;
                 const endpoint = isEvenMonth ? '/api/challenges/em' : '/api/challenges/om';
-                const response = await fetch(endpoint);
+                const apiUrl = process.env.NEXT_PUBLIC_API_URL
+                    ? `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`
+                    : endpoint;
+
+                const response = await fetch(apiUrl);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch challenges');
