@@ -11,12 +11,12 @@ interface StatsCardProps {
   };
 }
 
-export default function StatsCard({ 
-  title, 
-  value, 
-  icon: Icon, 
+export default function StatsCard({
+  title,
+  value,
+  icon: Icon,
   color = 'blue',
-  trend 
+  trend
 }: StatsCardProps) {
   const colorClasses = {
     blue: 'bg-blue-500',
@@ -41,13 +41,13 @@ export default function StatsCard({
                 {title}
               </dt>
               <dd className="flex items-baseline">
-                <div className="text-2xl font-semibold text-gray-900">
+                <div className={`${String(value).length > 10 ? 'text-lg' : 'text-2xl'
+                  } font-semibold text-gray-900 truncate`}>
                   {value}
                 </div>
                 {trend && (
-                  <div className={`ml-2 flex items-baseline text-sm font-semibold ${
-                    trend.isPositive ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                  <div className={`ml-2 flex items-baseline text-sm font-semibold ${trend.isPositive ? 'text-green-600' : 'text-red-600'
+                    }`}>
                     <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
                   </div>
                 )}

@@ -235,6 +235,21 @@ export interface DashboardStats {
   version?: string;
 }
 
+export interface DashboardStatus {
+  database: string;
+  api: string;
+  version: string;
+  uptime: number;
+  memory: {
+    rss: number;
+    heapTotal: number;
+    heapUsed: number;
+    external: number;
+    arrayBuffers: number;
+  };
+  timestamp: string;
+}
+
 // 쿼리 파라미터 타입
 export interface QueryParams {
   [key: string]: string | number | boolean | undefined;

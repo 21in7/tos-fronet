@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { dashboardApi } from '@/lib/api';
-import { DashboardStats } from '@/types/api';
+import { DashboardStats, DashboardStatus } from '@/types/api';
 import StatsCard from '@/components/dashboard/StatsCard';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
@@ -21,6 +21,11 @@ export default function Dashboard() {
   const { data, isLoading, error } = useQuery({
     queryKey: ['dashboard', 'stats'],
     queryFn: () => dashboardApi.getStats(),
+  });
+
+  const { data: statusData } = useQuery({
+    queryKey: ['dashboard', 'status'],
+    queryFn: () => dashboardApi.getStatus(),
   });
 
   if (isLoading) {
@@ -48,6 +53,7 @@ export default function Dashboard() {
   }
 
   const stats = data?.data as DashboardStats;
+  const status = statusData?.data as DashboardStatus;
 
   return (
     <ErrorBoundary>
@@ -62,7 +68,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           <StatsCard
             title="현재 게임 버전"
-            value={stats?.version || '확인 중...'}
+            value={status?.version || '확인 중...'}
             icon={BarChart3}
             color="purple"
           />

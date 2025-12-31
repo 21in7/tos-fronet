@@ -24,6 +24,7 @@ const navigation = [
   { name: '스킬', href: '/skills', icon: Zap },
   { name: '직업', href: '/jobs', icon: Briefcase },
   { name: '맵', href: '/maps', icon: Map },
+  { name: '챌린지', href: '/challenges', icon: Sword },
   { name: '플래너', href: '/planner', icon: Briefcase },
 ];
 
@@ -88,9 +89,9 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${isActive
-                        ? 'border-indigo-500 text-gray-900'
-                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium whitespace-nowrap ${isActive
+                      ? 'border-indigo-500 text-gray-900'
+                      : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
                       }`}
                   >
                     <item.icon className="w-4 h-4 mr-2" />
