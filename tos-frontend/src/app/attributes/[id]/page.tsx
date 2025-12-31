@@ -92,7 +92,7 @@ export default function AttributeDetailPage() {
         <div className="bg-white shadow-lg rounded-lg p-8">
           <div className="mb-6">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">{attribute.name}</h1>
-            
+
             {/* 설명 */}
             {attribute.descriptions && (
               <div className="mb-6 p-4 bg-gray-50 rounded-lg">
@@ -151,9 +151,8 @@ export default function AttributeDetailPage() {
                       {attribute.id_name}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        attribute.is_toggleable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                      }`}>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${attribute.is_toggleable ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
                         {attribute.is_toggleable ? 'O' : 'X'}
                       </span>
                     </td>
@@ -178,7 +177,7 @@ export default function AttributeDetailPage() {
                 width={200}
                 height={200}
                 className="rounded-lg shadow-lg"
-                type="item"
+                type="attribute"
                 priority={true}
               />
               {/* 토글 가능 여부 표시 */}

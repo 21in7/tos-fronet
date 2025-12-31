@@ -2,12 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { useParams, useRouter } from 'next/navigation';
-import { skillsApi } from '@/lib/api';
-import { Skill } from '@/types/api';
+import { skillsApi, attributesApi } from '@/lib/api';
+import { Skill, Attribute } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
-import { ArrowLeft, Zap, Clock, Target, Star, Book } from 'lucide-react';
+import { ArrowLeft, Zap, Clock, Target, Star, Book, Box } from 'lucide-react';
 
 const formatDate = (dateString?: string) => {
   if (!dateString) return 'N/A';
@@ -20,6 +20,15 @@ const formatDate = (dateString?: string) => {
   }
 };
 
+const formatCooldown = (cooldown?: number) => {
+  if (!cooldown) return 'N/A';
+  // 100초 이상이면 ms로 간주 (TOS 데이터 특성상 쿨다운이 100초 넘는 경우는 드뭄, 보통 10000ms = 10초)
+  if (cooldown > 100) {
+    return `${cooldown / 1000}초`;
+  }
+  return `${cooldown}초`;
+};
+
 export default function SkillDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -30,6 +39,17 @@ export default function SkillDetailPage() {
     queryFn: () => skillsApi.getById(parseInt(skillId)),
     enabled: !!skillId,
   });
+
+  const skill = data?.data as Skill;
+
+  // 관련 특성/아츠 검색 (스킬 이름을 포함하는 특성 검색)
+  const { data: attributesData } = useQuery({
+    queryKey: ['attributes', 'related', skill?.name],
+    queryFn: () => attributesApi.getAll({ search: skill.name, limit: 100 }),
+    enabled: !!skill?.name,
+  });
+
+  const relatedAttributes = attributesData?.data as Attribute[] || [];
 
   if (isLoading) {
     return (
@@ -58,8 +78,6 @@ export default function SkillDetailPage() {
       </div>
     );
   }
-
-  const skill = data?.data as Skill;
 
   if (!skill) {
     return (
@@ -123,19 +141,20 @@ export default function SkillDetailPage() {
                     <span className="font-semibold text-gray-900">{skill.type || 'N/A'}</span>
                   </div>
 
-                  {skill.level && (
-                    <div className="flex items-center space-x-2">
-                      <Star className="w-5 h-5 text-yellow-500" />
-                      <span className="text-sm text-gray-600">레벨:</span>
-                      <span className="font-semibold text-gray-900">{skill.level}</span>
-                    </div>
-                  )}
+                  {/* 레벨 & 최대 레벨 */}
+                  <div className="flex items-center space-x-2">
+                    <Star className="w-5 h-5 text-yellow-500" />
+                    <span className="text-sm text-gray-600">레벨:</span>
+                    <span className="font-semibold text-gray-900">
+                      {skill.level || 0} / {skill.max_level || skill.max_lv || 5}
+                    </span>
+                  </div>
 
                   {skill.cooldown && (
                     <div className="flex items-center space-x-2">
                       <Clock className="w-5 h-5 text-gray-500" />
                       <span className="text-sm text-gray-600">쿨다운:</span>
-                      <span className="font-semibold text-gray-900">{skill.cooldown}초</span>
+                      <span className="font-semibold text-gray-900">{formatCooldown(skill.cooldown)}</span>
                     </div>
                   )}
 
@@ -163,16 +182,53 @@ export default function SkillDetailPage() {
                 </div>
 
                 {/* 설명 */}
-                {skill.description && (
+                {(skill.description || skill.descriptions) && (
                   <div className="mb-6">
                     <h3 className="text-lg font-medium text-gray-900 mb-2">설명</h3>
-                    <p className="text-gray-700 leading-relaxed">{skill.description}</p>
+                    <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      {skill.descriptions || skill.description}
+                    </p>
                   </div>
                 )}
               </div>
             </div>
           </div>
         </div>
+
+        {/* 관련 특성 및 아츠 */}
+        {relatedAttributes.length > 0 && (
+          <div className="bg-white shadow rounded-lg p-6">
+            <div className="flex items-center space-x-2 mb-4">
+              <Box className="w-5 h-5 text-indigo-500" />
+              <h3 className="text-lg font-medium text-gray-900">관련 특성 및 아츠</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {relatedAttributes.map((attr) => (
+                <div key={attr.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-start space-x-3">
+                    <GameImage
+                      src={attr.icon_url}
+                      alt={attr.name}
+                      width={48}
+                      height={48}
+                      type="attribute"
+                      className="rounded"
+                    />
+                    <div>
+                      <h4 className="font-medium text-gray-900">{attr.name}</h4>
+                      <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                        {attr.descriptions || attr.description}
+                      </p>
+                      <div className="mt-2 text-xs text-indigo-600 font-medium">
+                        Max Lv. {attr.max_lv}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 스킬 효과 */}
         {skill.effects && typeof skill.effects === 'object' && Object.keys(skill.effects).length > 0 && (

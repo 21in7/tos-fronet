@@ -1,20 +1,77 @@
 'use client';
 
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
+import { jobsApi } from '@/lib/api';
+import { Job } from '@/types/api';
 import ClassSelector from '@/components/planner/ClassSelector';
 import SkillPanel from '@/components/planner/SkillPanel';
 import { usePlannerStore } from '@/store/usePlannerStore';
 import { Share2, RotateCcw } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 
 
 function PlannerContent() {
-    const { selectedJobs, skillAllocations, resetAll } = usePlannerStore();
+    const { selectedJobs, skillAllocations, resetAll, setJob, updateSkillLevel } = usePlannerStore();
     const router = useRouter();
+    const searchParams = useSearchParams();
+
+    // Fetch all jobs to map IDs to objects
+    const { data: jobsResponse } = useQuery({
+        queryKey: ['jobs-all'],
+        queryFn: () => jobsApi.getAll({ limit: 1000 }),
+        staleTime: 1000 * 60 * 60,
+    });
+
+    // Initialize state from URL
+    useEffect(() => {
+        if (!jobsResponse?.data || !searchParams) return;
+
+        const jobs = Array.isArray(jobsResponse.data) ? jobsResponse.data : [];
+        if (jobs.length === 0) return;
+
+        const urlJobs = searchParams.get('j');
+        const urlSkills = searchParams.get('s');
+
+        // Restore Jobs
+        if (urlJobs) {
+            const jobIds = urlJobs.split(',').map(id => parseInt(id.trim(), 10));
+            // Only restore if we have valid IDs and it's not already set (or we force it)
+            // Ideally check if store is empty or needs update. 
+            // For now, if store is empty (all null) -> populate
+            const currentEmpty = selectedJobs.every(j => j === null);
+
+            if (currentEmpty && jobIds.length > 0) {
+                jobIds.forEach((id, index) => {
+                    if (isNaN(id)) return;
+                    const jobObj = jobs.find(j => j.id === id);
+                    if (jobObj && index < 4) {
+                        setJob(index, jobObj);
+                    }
+                });
+            }
+        }
+
+        // Restore Skills
+        // Format: jobId-skillId-level.jobId-skillId-level...
+        if (urlSkills) {
+            const skillParts = urlSkills.split('.');
+            skillParts.forEach(part => {
+                const [jIdStr, sIdStr, lvlStr] = part.split('-');
+                const jobId = parseInt(jIdStr, 10);
+                const skillId = parseInt(sIdStr, 10);
+                const level = parseInt(lvlStr, 10);
+
+                if (!isNaN(jobId) && !isNaN(skillId) && !isNaN(level)) {
+                    updateSkillLevel(jobId, skillId, level);
+                }
+            });
+        }
+        // We only want to run this once on mount/data load, not on every store change
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [jobsResponse, searchParams]); // Dependencies: data and params
 
     // URL State Sync (Write)
-    // We can also implement a persistent sync using useEffect if desired, 
-    // but for "Share" button goal, we just generate it on demand.
     const handleCopyLink = () => {
         // Serialization
         const jobIds = selectedJobs.map(j => j ? j.id : '').join(',');

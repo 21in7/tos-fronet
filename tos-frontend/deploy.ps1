@@ -19,15 +19,17 @@ if ($buildProcess.ExitCode -ne 0) {
 # 2. Prepare Standalone Directory
 Write-Host "2. Preparing Standalone Directory..." -ForegroundColor Yellow
 # Copy public folder
-Copy-Item -Path "public" -Destination ".next/standalone/public" -Recurse -Force
+New-Item -ItemType Directory -Force -Path ".next/standalone/public"
+Copy-Item -Path "public\*" -Destination ".next/standalone/public" -Recurse -Force
+
 # Copy static assets
 New-Item -ItemType Directory -Force -Path ".next/standalone/.next/static"
-Copy-Item -Path ".next/static" -Destination ".next/standalone/.next/static" -Recurse -Force
+Copy-Item -Path ".next\static\*" -Destination ".next/standalone/.next/static" -Recurse -Force
 
 # 3. Deploy to Server (SCP)
 Write-Host "3. Uploading to Server (This may take a while)..." -ForegroundColor Yellow
 # Clean remote directory first (Optional, safer)
-# ssh $SERVER_USER@$SERVER_IP "rm -rf $SERVER_PATH/.next"
+ssh $SERVER_USER@$SERVER_IP "rm -rf $SERVER_PATH/.next"
 
 # Upload standalone folder
 # Note: Using scp recursively on Windows can be tricky with paths. 
@@ -45,8 +47,11 @@ $commands = @(
     "cd $SERVER_PATH",
     "unzip -o deploy_package.zip",
     "rm deploy_package.zip",
+    "echo 'Reinstalling dependencies for Linux compatibility...'",
+    "rm -rf node_modules",
+    "npm install --production",
     "pm2 delete $PM2_NAME || true",
-    "pm2 start server.js --name $PM2_NAME"
+    "PORT=3001 pm2 start server.js --name $PM2_NAME"
 )
 $commandString = $commands -join " && "
 

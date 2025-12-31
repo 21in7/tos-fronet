@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { attributesApi } from '@/lib/api';
 import { Attribute } from '@/types/api';
+import GameImage from '@/components/common/GameImage';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import ErrorBoundary from '@/components/common/ErrorBoundary';
 import Pagination from '@/components/common/Pagination';
@@ -197,8 +198,16 @@ export default function AttributesPage() {
                 <div className="flex items-start space-x-4">
                   {/* 특성 아이콘 */}
                   <div className="flex-shrink-0">
-                    <div className={`h-12 w-12 rounded-full ${typeStyle.bg} flex items-center justify-center border ${typeStyle.border}`}>
-                      <span className="text-lg">{typeStyle.icon}</span>
+                    {/* 특성 아이콘 */}
+                    <div className="flex-shrink-0">
+                      <GameImage
+                        src={attribute.icon_url}
+                        alt={attribute.name}
+                        width={48}
+                        height={48}
+                        className="rounded-lg bg-gray-100" // Add bg-gray-100 to match previous style roughly if image fails initially
+                        type="attribute"
+                      />
                     </div>
                   </div>
 
