@@ -316,7 +316,7 @@ export default function ArcheologyPage() {
                             setSelectedOptionDescs(["", "", ""]);
                             setResults(null);
                         }}
-                        className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                        className="block w-full pl-3 pr-10 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                     >
                         <option value="">-- 아이템 선택 --</option>
                         {EXHIBITION_ITEMS.map((item) => (
@@ -344,7 +344,7 @@ export default function ArcheologyPage() {
                                         setSelectedOptionDescs(newDescs);
                                     }}
                                     disabled={!currentItem}
-                                    className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md disabled:bg-gray-100"
+                                    className="block w-full pl-3 pr-10 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md disabled:bg-gray-100"
                                 >
                                     <option value="">-- 선택 안함 --</option>
                                     {availableDescs.map((desc) => (
