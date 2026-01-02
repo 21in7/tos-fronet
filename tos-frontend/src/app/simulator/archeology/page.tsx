@@ -2,9 +2,9 @@
 
 import { useState, useEffect, useMemo, useRef, useCallback } from "react";
 import Image from "next/image";
-import { EXHIBITION_ITEMS, OPTION_DATA, OptionData } from "./data";
+import { EXHIBITION_ITEMS, OPTION_DATA, OptionData, ExhibitionItem } from "./data";
 import { calcWeightBaseRandom, isInteger } from "./utils";
-import { RefreshCw, Play, Square, Award, Settings, Info, Search } from "lucide-react";
+import { RefreshCw, Play, Square, Award, Settings, Info, Search, List } from "lucide-react";
 
 interface EnchantResult {
     id: number;
@@ -17,6 +17,11 @@ interface Stats {
     optionCounts: Record<number, number>;
     optionValueSum: Record<number, number>;
     optionValueCount: Record<number, number>;
+}
+
+interface ItemWithOption {
+    item: ExhibitionItem;
+    options: OptionData[];
 }
 
 export default function ArcheologyPage() {
@@ -33,6 +38,12 @@ export default function ArcheologyPage() {
     const [isAutoEnchanting, setIsAutoEnchanting] = useState(false);
     const [autoEnchantCount, setAutoEnchantCount] = useState(0);
 
+    // 전체 옵션 목록 (중복 제거)
+    const allOptionDescs = useMemo(() => {
+        const descs = new Set(OPTION_DATA.filter(opt => opt.Weight > 0).map(opt => opt.Desc));
+        return Array.from(descs).sort();
+    }, []);
+
     const currentItem = useMemo(() =>
         EXHIBITION_ITEMS.find(item => item.ClassID.toString() === selectedItemId),
         [selectedItemId]
@@ -47,9 +58,38 @@ export default function ArcheologyPage() {
     }, [currentItem]);
 
     const availableDescs = useMemo(() => {
+        if (!currentItem) {
+            // 아이템 미선택 시 전체 옵션 표시
+            return allOptionDescs;
+        }
         const descs = new Set(currentOptionPool.map(opt => opt.Desc));
         return Array.from(descs).sort();
-    }, [currentOptionPool]);
+    }, [currentItem, currentOptionPool, allOptionDescs]);
+
+    // 선택한 옵션이 등장하는 아이템 목록
+    const itemsWithSelectedOption = useMemo(() => {
+        const activeDescs = selectedOptionDescs.filter(d => d !== "");
+        if (activeDescs.length === 0) return [];
+
+        const result: ItemWithOption[] = [];
+
+        for (const item of EXHIBITION_ITEMS) {
+            const optionIds = item.OptionPool.split(';').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+            const itemOptions = OPTION_DATA.filter(opt => optionIds.includes(opt.ClassID) && opt.Weight > 0);
+
+            // 선택된 옵션 중 하나라도 포함하는지 확인
+            const matchingOptions = itemOptions.filter(opt => activeDescs.includes(opt.Desc));
+
+            if (matchingOptions.length > 0) {
+                result.push({
+                    item,
+                    options: matchingOptions
+                });
+            }
+        }
+
+        return result;
+    }, [selectedOptionDescs]);
 
     // Probability calculation
     const probabilityInfo = useMemo(() => {
@@ -313,7 +353,6 @@ export default function ArcheologyPage() {
                         value={selectedItemId}
                         onChange={(e) => {
                             setSelectedItemId(e.target.value);
-                            setSelectedOptionDescs(["", "", ""]);
                             setResults(null);
                         }}
                         className="block w-full pl-3 pr-10 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
@@ -325,6 +364,9 @@ export default function ArcheologyPage() {
                             </option>
                         ))}
                     </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                        옵션을 선택하면 해당 옵션이 등장하는 아이템 목록이 표시됩니다
+                    </p>
                 </div>
 
                 {/* Target Options */}
@@ -343,8 +385,7 @@ export default function ArcheologyPage() {
                                         newDescs[idx] = e.target.value;
                                         setSelectedOptionDescs(newDescs);
                                     }}
-                                    disabled={!currentItem}
-                                    className="block w-full pl-3 pr-10 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md disabled:bg-gray-100"
+                                    className="block w-full pl-3 pr-10 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                                 >
                                     <option value="">-- 선택 안함 --</option>
                                     {availableDescs.map((desc) => (
@@ -354,7 +395,79 @@ export default function ArcheologyPage() {
                             </div>
                         ))}
                     </div>
+                    <p className="text-xs text-gray-500 mt-2">
+                        원하는 옵션을 설명(Desc)으로 선택하세요. 최대 3개까지 선택 가능합니다.
+                    </p>
                 </div>
+
+                {/* Items with Selected Option */}
+                {itemsWithSelectedOption.length > 0 && (
+                    <div>
+                        <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                            <List className="w-4 h-4 text-indigo-500" /> 선택한 옵션이 등장하는 아이템 목록
+                        </label>
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                            {/* Left - Option Info */}
+                            <div className="bg-gray-50 rounded-md p-4">
+                                {selectedOptionDescs.filter(d => d).map((desc, i) => {
+                                    const options = OPTION_DATA.filter(opt => opt.Desc === desc && opt.Weight > 0);
+                                    if (options.length === 0) return null;
+                                    const minVal = Math.min(...options.map(o => o.MinValue));
+                                    const maxVal = Math.max(...options.map(o => o.MaxValue));
+                                    const isEffect = options[0]?.Type === 'Effect';
+
+                                    return (
+                                        <div key={i} className="mb-3 last:mb-0">
+                                            <div className="font-medium text-gray-900">{desc}</div>
+                                            <div className="text-sm text-gray-600">
+                                                수치 범위: <span className="font-mono text-indigo-600">{minVal} ~ {maxVal}{isEffect && '%'}</span>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Right - Items List */}
+                            <div className="bg-indigo-50 rounded-md p-4 max-h-64 overflow-y-auto">
+                                <div className="text-sm font-medium text-indigo-700 mb-2">
+                                    등장 아이템: {itemsWithSelectedOption.length}개
+                                </div>
+                                <div className="space-y-2">
+                                    {itemsWithSelectedOption.map(({ item, options }) => {
+                                        const totalWeight = OPTION_DATA.filter(opt =>
+                                            item.OptionPool.split(';').map(id => parseInt(id.trim())).includes(opt.ClassID) && opt.Weight > 0
+                                        ).reduce((sum, opt) => sum + opt.Weight, 0);
+                                        const optWeight = options.reduce((sum, opt) => sum + opt.Weight, 0);
+
+                                        return (
+                                            <div
+                                                key={item.ClassID}
+                                                className="bg-white p-2 rounded border border-indigo-100 cursor-pointer hover:border-indigo-300 transition-colors"
+                                                onClick={() => setSelectedItemId(item.ClassID.toString())}
+                                            >
+                                                <div className="font-medium text-gray-900 text-sm">{item.Name}</div>
+                                                <div className="text-xs text-gray-500">
+                                                    수치 범위: {options[0]?.MinValue} ~ {options[0]?.MaxValue} |
+                                                    옵션 {item.OptionCount}개 | 비용: {item.cost}
+                                                </div>
+                                                <div className="flex gap-2 mt-1">
+                                                    {options.slice(0, 1).map((opt, i) => (
+                                                        <span key={i} className={`text-xs px-1.5 py-0.5 rounded ${opt.Grade === 1 ? 'bg-green-100 text-green-700' :
+                                                                opt.Grade === 2 ? 'bg-yellow-100 text-yellow-700' :
+                                                                    'bg-red-100 text-red-700'
+                                                            }`}>
+                                                            {opt.Grade === 1 ? 'Low' : opt.Grade === 2 ? 'Mid' : 'High'}: {opt.MinValue}~{opt.MaxValue} (W:{opt.Weight})
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Probability Preview */}
                 <div>
