@@ -51,8 +51,8 @@ export default function SkillsPage() {
     <ErrorBoundary>
       <div className="space-y-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">스킬</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">스킬</h1>
+          <p className="mt-1 text-xs sm:text-sm text-gray-500">
             게임 내 모든 스킬 목록입니다.
           </p>
         </div>
@@ -64,9 +64,9 @@ export default function SkillsPage() {
                 <GameImage
                   src={skill.icon_url}
                   alt={skill.name}
-                  width={64}
-                  height={64}
-                  className="flex-shrink-0"
+                  width={48}
+                  height={48}
+                  className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16"
                   type="skill"
                 />
                 <div className="flex-1 min-w-0">
@@ -77,11 +77,10 @@ export default function SkillsPage() {
                           {skill.name}
                         </h3>
                       </Link>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        skill.type === 'active' 
-                          ? 'bg-blue-100 text-blue-800' 
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${skill.type === 'active'
+                          ? 'bg-blue-100 text-blue-800'
                           : 'bg-green-100 text-green-800'
-                      }`}>
+                        }`}>
                         {skill.type === 'active' ? '액티브' : '패시브'}
                       </span>
                     </div>

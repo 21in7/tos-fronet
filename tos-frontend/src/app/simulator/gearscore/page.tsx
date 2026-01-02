@@ -115,19 +115,19 @@ export default function GearScorePage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">기어스코어 계산기</h1>
-                <p className="mt-1 text-sm text-gray-500">
+            <div className="mb-6 sm:mb-8">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">기어스코어 계산기</h1>
+                <p className="mt-1 text-xs sm:text-sm text-gray-500">
                     장비 정보를 입력하면 기어스코어를 계산합니다
                 </p>
             </div>
 
             {/* Total Score */}
-            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 shadow rounded-lg p-6 text-white">
+            <div className="bg-gradient-to-r from-indigo-500 to-purple-600 shadow rounded-lg p-4 sm:p-6 text-white">
                 <div className="flex items-center justify-between">
                     <div>
-                        <div className="text-sm opacity-80">총 기어스코어</div>
-                        <div className="text-4xl font-bold">{totalScore.toLocaleString()}</div>
+                        <div className="text-xs sm:text-sm opacity-80">총 기어스코어</div>
+                        <div className="text-2xl sm:text-4xl font-bold">{totalScore.toLocaleString()}</div>
                     </div>
                     <Calculator className="w-12 h-12 opacity-50" />
                 </div>
@@ -151,7 +151,7 @@ export default function GearScorePage() {
                     const itemScore = itemScores.find(s => s.id === item.id)?.score || 0;
 
                     return (
-                        <div key={item.id} className="bg-white shadow rounded-lg p-6">
+                        <div key={item.id} className="bg-white shadow rounded-lg p-4 sm:p-6">
                             <div className="flex items-center justify-between mb-4">
                                 <h3 className="text-lg font-medium text-gray-900 flex items-center gap-2">
                                     <Settings className="w-5 h-5 text-indigo-500" />
@@ -172,7 +172,7 @@ export default function GearScorePage() {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
                                 {/* Slot Type */}
                                 <div>
                                     <label className="block text-xs text-gray-500 mb-1">장비 타입</label>

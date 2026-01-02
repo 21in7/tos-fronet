@@ -97,8 +97,8 @@ export default function JobsPage() {
     <ErrorBoundary>
       <div className="space-y-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">직업</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">직업</h1>
+          <p className="mt-1 text-xs sm:text-sm text-gray-500">
             게임 내 모든 직업 목록입니다.
           </p>
         </div>
@@ -125,8 +125,8 @@ export default function JobsPage() {
           </div>
 
           {/* Class Filter */}
-          <div className="flex flex-wrap gap-2">
-            <div className="flex items-center text-sm text-gray-500 mr-2">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2">
+            <div className="flex items-center text-sm text-gray-500 flex-shrink-0">
               <Filter className="w-4 h-4 mr-1" />
               계열 필터:
             </div>
@@ -134,9 +134,9 @@ export default function JobsPage() {
               <button
                 key={type.id}
                 onClick={() => handleTypeSelect(type.id)}
-                className={`px-3 py-1 text-xs font-medium rounded-full transition-colors ${selectedType === type.id
-                    ? 'bg-indigo-100 text-indigo-800 ring-2 ring-indigo-500 ring-offset-1'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                className={`px-3 py-1.5 text-xs font-medium rounded-full transition-colors flex-shrink-0 ${selectedType === type.id
+                  ? 'bg-indigo-100 text-indigo-800 ring-2 ring-indigo-500 ring-offset-1'
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
               >
                 {type.label}
@@ -179,9 +179,9 @@ export default function JobsPage() {
                     <GameImage
                       src={job.icon_url}
                       alt={job.name}
-                      width={64}
-                      height={64}
-                      className="flex-shrink-0"
+                      width={48}
+                      height={48}
+                      className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16"
                       type="job"
                     />
                     <div className="flex-1 min-w-0">

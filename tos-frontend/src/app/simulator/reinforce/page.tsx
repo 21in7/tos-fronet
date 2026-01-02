@@ -131,9 +131,9 @@ export default function ReinforcePage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">장비 강화 시뮬레이터</h1>
-                <p className="mt-1 text-sm text-gray-500">
+            <div className="mb-6 sm:mb-8">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">장비 강화 시뮬레이터</h1>
+                <p className="mt-1 text-xs sm:text-sm text-gray-500">
                     여신 장비 강화 확률 및 예상 비용을 시뮬레이션합니다
                 </p>
             </div>
@@ -145,7 +145,7 @@ export default function ReinforcePage() {
                     강화 설정
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
                     {/* Equipment Level */}
                     <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">장비 레벨</label>
@@ -253,7 +253,7 @@ export default function ReinforcePage() {
                         시뮬레이션 결과 ({simulationCount.toLocaleString()}회 평균)
                     </h2>
 
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-4">
                         <div className="bg-indigo-50 p-4 rounded-lg text-center">
                             <div className="text-2xl font-bold text-indigo-600">
                                 {(simulationResult.attempts / simulationCount).toFixed(1)}

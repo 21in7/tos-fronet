@@ -76,8 +76,9 @@ export default function Header() {
           <div className="flex justify-between h-16">
             <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-gray-900">
-                  트리오브세이비어
+                <h1 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+                  <span className="hidden sm:inline">트리오브세이비어</span>
+                  <span className="sm:hidden">ToS</span>
                 </h1>
               </div>
             </div>
@@ -96,8 +97,9 @@ export default function Header() {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-xl font-bold text-gray-900">
-                트리오브세이비어
+              <h1 className="text-base sm:text-lg md:text-xl font-bold text-gray-900">
+                <span className="hidden sm:inline">트리오브세이비어</span>
+                <span className="sm:hidden">ToS</span>
               </h1>
             </div>
             <nav className="hidden lg:ml-6 lg:flex lg:space-x-4">
@@ -159,13 +161,13 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:block">
+            <div className="hidden md:block">
               <ApiStatus />
             </div>
             <div className="lg:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                className="inline-flex items-center justify-center p-3 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500 min-w-[44px] min-h-[44px]"
               >
                 <span className="sr-only">메뉴 열기</span>
                 {isMobileMenuOpen ? (

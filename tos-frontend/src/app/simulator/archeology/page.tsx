@@ -290,9 +290,9 @@ export default function ArcheologyPage() {
     return (
         <div className="space-y-6">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">고고학 옵션 시뮬레이터</h1>
-                <p className="mt-1 text-sm text-gray-500">
+            <div className="mb-6 sm:mb-8">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">고고학 옵션 시뮬레이터</h1>
+                <p className="mt-1 text-xs sm:text-sm text-gray-500">
                     인게임과 동일한 Weight 기반 랜덤 알고리즘으로 옵션을 뽑아보세요
                 </p>
             </div>
@@ -310,9 +310,9 @@ export default function ArcheologyPage() {
                         />
                     </div>
                     <div className="flex-1 text-center sm:text-left">
-                        <h2 className="text-lg font-medium text-gray-900">고고학 유물</h2>
-                        <p className="text-sm text-gray-500 mt-1">감정하여 옵션을 부여할 수 있습니다</p>
-                        <div className="flex flex-wrap gap-3 mt-4 justify-center sm:justify-start">
+                        <h2 className="text-base sm:text-lg font-medium text-gray-900">고고학 유물</h2>
+                        <p className="text-xs sm:text-sm text-gray-500 mt-1">감정하여 옵션을 부여할 수 있습니다</p>
+                        <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mt-4">
                             <button
                                 onClick={() => handleRoll()}
                                 disabled={!currentItem || isAutoEnchanting}
@@ -529,7 +529,7 @@ export default function ArcheologyPage() {
                     <h2 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
                         <Settings className="w-5 h-5 text-indigo-500" /> 감정 결과
                     </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
                         {results.map((res, idx) => {
                             const isMatch = selectedOptionDescs.includes(res.option.Desc);
                             const gradeColor = res.option.Grade === 1 ? 'text-green-600 bg-green-50 border-green-200' :
@@ -560,7 +560,7 @@ export default function ArcheologyPage() {
                     <h3 className="text-lg font-medium text-gray-900 mb-4 flex items-center gap-2">
                         <Search className="w-5 h-5 text-indigo-500" /> 세션 통계
                     </h3>
-                    <div className="grid grid-cols-3 gap-4 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
                         <div className="bg-gray-50 p-4 rounded-lg text-center">
                             <div className="text-2xl font-bold text-indigo-600">{stats.totalRolls}</div>
                             <div className="text-xs text-gray-500 mt-1">총 감정 횟수</div>

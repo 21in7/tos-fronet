@@ -97,7 +97,7 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
     return (
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             {/* Header */}
-            <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex justify-between items-center rounded-t-lg">
+            <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex justify-between items-center rounded-t-lg">
                 <div className="flex items-center space-x-3">
                     <GameImage
                         src={job.icon_url}
@@ -106,7 +106,7 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
                         height={32}
                         type="job"
                     />
-                    <h3 className="text-lg font-bold text-gray-900">{job.name}</h3>
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900">{job.name}</h3>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -120,14 +120,14 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
             </div>
 
             {/* Skills Grid */}
-            <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="p-4 sm:p-6 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                 {skills.map((skill) => {
                     const currentLevel = skillAllocations[job.id]?.[skill.id] || 0;
                     const maxLevel = getMaxLevel(skill);
                     const isHovered = hoveredSkillId === skill.id;
 
                     return (
-                        <div key={skill.id} className="flex items-start space-x-3 p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
+                        <div key={skill.id} className="flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
                             <div
                                 className="relative group"
                                 onMouseEnter={() => setHoveredSkillId(skill.id)}
@@ -136,9 +136,10 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
                                 <GameImage
                                     src={skill.icon_url}
                                     alt={skill.name}
-                                    width={48}
-                                    height={48}
+                                    width={40}
+                                    height={40}
                                     type="skill"
+                                    className="w-8 h-8 sm:w-12 sm:h-12"
                                 />
                                 {isHovered && (
                                     <SkillTooltip skill={skill} />

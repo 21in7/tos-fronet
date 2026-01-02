@@ -39,14 +39,14 @@ export default function ClassSelector() {
 
     return (
         <>
-            <div className="flex flex-wrap items-center gap-4 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center gap-2 sm:gap-4 bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-200 overflow-x-auto">
                 {selectedJobs.map((job, index) => (
                     <div key={index} className="flex items-center">
                         {/* Slot */}
                         <div
                             onClick={() => handleSlotClick(index)}
                             className={`
-                relative flex items-center justify-center w-20 h-20 rounded-xl border-2 transition-all cursor-pointer
+                relative flex items-center justify-center w-14 h-14 sm:w-20 sm:h-20 rounded-xl border-2 transition-all cursor-pointer flex-shrink-0
                 ${job
                                     ? 'border-indigo-500 bg-indigo-50'
                                     : (index === 0 || selectedJobs[index - 1])
@@ -60,9 +60,10 @@ export default function ClassSelector() {
                                     <GameImage
                                         src={job.icon_url}
                                         alt={job.name}
-                                        width={48}
-                                        height={48}
+                                        width={40}
+                                        height={40}
                                         type="job"
+                                        className="w-8 h-8 sm:w-12 sm:h-12"
                                     />
 
                                     {/* Remove Button - Only if not base? Or allowed? Let's allow but it resets all */}
@@ -73,7 +74,7 @@ export default function ClassSelector() {
                                         <X className="w-3 h-3" />
                                     </button>
 
-                                    <div className="absolute -bottom-8 text-xs font-medium text-gray-700 whitespace-nowrap text-center w-32 truncate">
+                                    <div className="absolute -bottom-6 sm:-bottom-8 text-xs font-medium text-gray-700 whitespace-nowrap text-center w-16 sm:w-32 truncate">
                                         {job.name}
                                     </div>
                                 </>
@@ -83,9 +84,9 @@ export default function ClassSelector() {
                             )}
                         </div>
 
-                        {/* Separator */}
+                        {/* Separator - hide on mobile */}
                         {index < 3 && (
-                            <ChevronRight className="w-5 h-5 text-gray-300 ml-4" />
+                            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-300 ml-1 sm:ml-4 hidden sm:block flex-shrink-0" />
                         )}
                     </div>
                 ))}
