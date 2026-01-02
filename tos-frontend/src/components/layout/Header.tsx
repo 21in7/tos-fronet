@@ -14,7 +14,10 @@ import {
   BarChart3,
   Menu,
   X,
-  Pickaxe
+  ChevronDown,
+  Pickaxe,
+  Hammer,
+  Calculator
 } from 'lucide-react';
 import ApiStatus from '@/components/common/ApiStatus';
 
@@ -29,13 +32,18 @@ const navigation = [
   { name: '맵', href: '/maps', icon: Map },
   { name: '챌린지', href: '/challenges', icon: Sword },
   { name: '플래너', href: '/planner', icon: Briefcase },
-  { name: '고고학', href: '/archeology', icon: Pickaxe },
+];
+
+const simulatorItems = [
+  { name: '고고학 옵션', href: '/simulator/archeology', icon: Pickaxe },
+  { name: '장비 강화', href: '/simulator/reinforce', icon: Hammer },
 ];
 
 export default function Header() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -43,7 +51,22 @@ export default function Header() {
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
+    setIsSimulatorOpen(false);
   }, [pathname]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.simulator-dropdown')) {
+        setIsSimulatorOpen(false);
+      }
+    };
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
+
+  const isSimulatorActive = pathname.startsWith('/simulator');
 
   if (!mounted) {
     return (
@@ -67,7 +90,7 @@ export default function Header() {
   }
 
   return (
-    <header className="bg-white shadow-sm border-b">
+    <header className="bg-white shadow-sm border-b relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
@@ -92,6 +115,45 @@ export default function Header() {
                   </Link>
                 );
               })}
+
+              {/* Simulator Dropdown */}
+              <div className="relative simulator-dropdown">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsSimulatorOpen(!isSimulatorOpen);
+                  }}
+                  className={`inline-flex items-center px-2 pt-1 border-b-2 text-sm font-medium whitespace-nowrap ${isSimulatorActive
+                    ? 'border-indigo-500 text-gray-900'
+                    : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
+                    }`}
+                >
+                  <Calculator className="w-4 h-4 mr-1" />
+                  시뮬레이터
+                  <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${isSimulatorOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {isSimulatorOpen && (
+                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 py-1 z-50">
+                    {simulatorItems.map((item) => {
+                      const isActive = pathname === item.href;
+                      return (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          className={`flex items-center px-4 py-2 text-sm ${isActive
+                            ? 'bg-indigo-50 text-indigo-700'
+                            : 'text-gray-700 hover:bg-gray-100'
+                            }`}
+                        >
+                          <item.icon className="w-4 h-4 mr-2" />
+                          {item.name}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </nav>
           </div>
 
@@ -137,6 +199,31 @@ export default function Header() {
                 </Link>
               );
             })}
+
+            {/* Mobile Simulator Section */}
+            <div className="border-t border-gray-200 pt-2">
+              <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                시뮬레이터
+              </div>
+              {simulatorItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive
+                      ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                      : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'
+                      }`}
+                  >
+                    <div className="flex items-center">
+                      <item.icon className="w-5 h-5 mr-3" />
+                      {item.name}
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
