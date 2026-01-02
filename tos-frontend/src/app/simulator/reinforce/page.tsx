@@ -152,7 +152,7 @@ export default function ReinforcePage() {
                         <select
                             value={equipLevel}
                             onChange={(e) => setEquipLevel(Number(e.target.value))}
-                            className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="block w-full pl-3 pr-10 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         >
                             {EQUIPMENT_LEVELS.map(lv => (
                                 <option key={lv} value={lv}>{lv} 레벨</option>
@@ -169,7 +169,7 @@ export default function ReinforcePage() {
                             max={29}
                             value={currentReinforce}
                             onChange={(e) => setCurrentReinforce(Math.min(29, Math.max(0, Number(e.target.value))))}
-                            className="block w-full pl-3 pr-3 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="block w-full pl-3 pr-3 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         />
                     </div>
 
@@ -182,7 +182,7 @@ export default function ReinforcePage() {
                             max={30}
                             value={targetReinforce}
                             onChange={(e) => setTargetReinforce(Math.min(30, Math.max(1, Number(e.target.value))))}
-                            className="block w-full pl-3 pr-3 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="block w-full pl-3 pr-3 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         />
                     </div>
 
@@ -192,7 +192,7 @@ export default function ReinforcePage() {
                         <select
                             value={simulationCount}
                             onChange={(e) => setSimulationCount(Number(e.target.value))}
-                            className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
+                            className="block w-full pl-3 pr-10 py-2 text-base text-gray-900 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                         >
                             <option value={100}>100회</option>
                             <option value={1000}>1,000회</option>
