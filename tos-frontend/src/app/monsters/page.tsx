@@ -132,8 +132,8 @@ export default function MonstersPage() {
     <ErrorBoundary>
       <div className="space-y-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">몬스터</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">몬스터</h1>
+          <p className="mt-1 text-xs sm:text-sm text-gray-500">
             {debouncedSearchQuery ? (
               <>
                 &quot;{debouncedSearchQuery}&quot;에 대한 검색 결과입니다.
@@ -157,7 +157,7 @@ export default function MonstersPage() {
 
           {/* 검색바 */}
           <div className="mt-6">
-            <div className="relative max-w-md">
+            <div className="relative w-full sm:max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 {inputValue !== debouncedSearchQuery ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>
@@ -195,9 +195,9 @@ export default function MonstersPage() {
                 <GameImage
                   src={monster.icon_url}
                   alt={monster.name}
-                  width={64}
-                  height={64}
-                  className="flex-shrink-0"
+                  width={48}
+                  height={48}
+                  className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16"
                   type="monster"
                   priority={index < 6} // 첫 6개 이미지는 우선 로딩
                 />

@@ -44,8 +44,8 @@ export default function MapsPage() {
     <ErrorBoundary>
       <div className="space-y-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">맵</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">맵</h1>
+          <p className="mt-1 text-xs sm:text-sm text-gray-500">
             게임 내 모든 맵 목록입니다.
           </p>
         </div>
@@ -57,9 +57,9 @@ export default function MapsPage() {
                 <GameImage
                   src={map.icon_url}
                   alt={map.name}
-                  width={64}
-                  height={64}
-                  className="flex-shrink-0"
+                  width={48}
+                  height={48}
+                  className="flex-shrink-0 w-12 h-12 sm:w-16 sm:h-16"
                   type="map"
                 />
                 <div className="flex-1 min-w-0">

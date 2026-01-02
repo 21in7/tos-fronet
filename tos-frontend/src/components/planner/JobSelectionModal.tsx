@@ -105,11 +105,10 @@ export default function JobSelectionModal({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-4 sm:p-6 text-left align-middle shadow-xl transition-all max-h-[90vh] flex flex-col">
                                 <div className="flex justify-between items-center mb-4">
                                     <Dialog.Title
-                                        as="h3"
-                                        className="text-lg font-medium leading-6 text-gray-900"
+                                        className="text-base sm:text-lg font-medium leading-6 text-gray-900"
                                     >
                                         {slotIndex === 0 ? '기본 직업 선택' : '전직 직업 선택'}
                                     </Dialog.Title>
@@ -134,7 +133,7 @@ export default function JobSelectionModal({
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4 max-h-[60vh] overflow-y-auto p-1">
+                                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-4 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto p-1 flex-1">
                                     {isLoading ? (
                                         <div className="col-span-full text-center py-8 text-gray-500">
                                             로딩 중...
@@ -144,20 +143,20 @@ export default function JobSelectionModal({
                                             <button
                                                 key={job.id}
                                                 onClick={() => onSelect(job)}
-                                                className="flex flex-col items-center p-3 rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
+                                                className="flex flex-col items-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
                                             >
                                                 <GameImage
                                                     src={job.icon_url}
                                                     alt={job.name}
-                                                    width={48}
-                                                    height={48}
+                                                    width={40}
+                                                    height={40}
                                                     type="job"
-                                                    className="mb-2 group-hover:scale-110 transition-transform"
+                                                    className="mb-1 sm:mb-2 w-8 h-8 sm:w-12 sm:h-12 group-hover:scale-110 transition-transform"
                                                 />
-                                                <span className="text-sm font-medium text-gray-900 text-center">
+                                                <span className="text-xs sm:text-sm font-medium text-gray-900 text-center line-clamp-1">
                                                     {job.name}
                                                 </span>
-                                                <span className="text-xs text-gray-500 mt-1">
+                                                <span className="text-xs text-gray-500 mt-0.5 sm:mt-1 hidden sm:block">
                                                     {job.job_tree}
                                                 </span>
                                             </button>

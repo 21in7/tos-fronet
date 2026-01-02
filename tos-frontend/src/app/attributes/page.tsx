@@ -115,8 +115,8 @@ export default function AttributesPage() {
     <ErrorBoundary>
       <div className="space-y-6">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">특성</h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">특성</h1>
+          <p className="mt-1 text-xs sm:text-sm text-gray-500">
             {debouncedSearchQuery ? (
               <>
                 &quot;{debouncedSearchQuery}&quot;에 대한 검색 결과입니다.
@@ -140,7 +140,7 @@ export default function AttributesPage() {
 
           {/* 검색바 */}
           <div className="mt-6">
-            <div className="relative max-w-md">
+            <div className="relative w-full sm:max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 {inputValue !== debouncedSearchQuery ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"></div>

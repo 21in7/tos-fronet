@@ -1,0 +1,5 @@
+{
+  "artifactType":  "ARTIFACT_TYPE_IMPLEMENTATION_PLAN",
+  "summary":  "모바일 반응형 최적화를 위한 상세 구현 계획. 레이아웃/네비게이션, 대시보드/리스트 페이지, 시뮬레이터, 플래너 별 변경 사항 및 Tailwind CSS 반응형 클래스 최적화 전략 포함.",
+  "updatedAt":  "2026-01-02T19:35:27.869419500Z"
+}
