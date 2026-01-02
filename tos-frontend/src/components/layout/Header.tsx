@@ -13,7 +13,8 @@ import {
   Map,
   BarChart3,
   Menu,
-  X
+  X,
+  Pickaxe
 } from 'lucide-react';
 import ApiStatus from '@/components/common/ApiStatus';
 
@@ -28,6 +29,7 @@ const navigation = [
   { name: '맵', href: '/maps', icon: Map },
   { name: '챌린지', href: '/challenges', icon: Sword },
   { name: '플래너', href: '/planner', icon: Briefcase },
+  { name: '고고학', href: '/archeology', icon: Pickaxe },
 ];
 
 export default function Header() {
@@ -85,8 +87,8 @@ export default function Header() {
                     key={item.name}
                     href={item.href}
                     className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium whitespace-nowrap ${isActive
-                        ? 'border-indigo-500 text-gray-900'
-                        : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
+                      ? 'border-indigo-500 text-gray-900'
+                      : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
                       }`}
                   >
                     <item.icon className="w-4 h-4 mr-2" />
@@ -123,8 +125,8 @@ export default function Header() {
                   key={item.name}
                   href={item.href}
                   className={`block pl-3 pr-4 py-2 border-l-4 text-base font-medium ${isActive
-                      ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
-                      : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'
+                    ? 'bg-indigo-50 border-indigo-500 text-indigo-700'
+                    : 'border-transparent text-gray-500 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700'
                     }`}
                 >
                   <div className="flex items-center">
