@@ -50,15 +50,15 @@ export default function Header() {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex">
+            <div className="flex items-center">
               <div className="flex-shrink-0 flex items-center">
                 <h1 className="text-xl font-bold text-gray-900">
                   트리오브세이비어
                 </h1>
               </div>
-              <div className="ml-4 flex items-center">
-                <ApiStatus />
-              </div>
+            </div>
+            <div className="flex items-center">
+              <ApiStatus />
             </div>
           </div>
         </div>
@@ -70,28 +70,24 @@ export default function Header() {
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
-          <div className="flex">
+          <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <h1 className="text-xl font-bold text-gray-900">
                 트리오브세이비어
               </h1>
             </div>
-            <div className="ml-4 flex items-center">
-              <ApiStatus />
-            </div>
-            <nav className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <nav className="hidden lg:ml-6 lg:flex lg:space-x-4">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium whitespace-nowrap ${isActive
+                    className={`inline-flex items-center px-2 pt-1 border-b-2 text-sm font-medium whitespace-nowrap ${isActive
                       ? 'border-indigo-500 text-gray-900'
                       : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
                       }`}
                   >
-                    <item.icon className="w-4 h-4 mr-2" />
                     {item.name}
                   </Link>
                 );
@@ -99,24 +95,29 @@ export default function Header() {
             </nav>
           </div>
 
-          <div className="-mr-2 flex items-center sm:hidden">
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-            >
-              <span className="sr-only">메뉴 열기</span>
-              {isMobileMenuOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block">
+              <ApiStatus />
+            </div>
+            <div className="lg:hidden">
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              >
+                <span className="sr-only">메뉴 열기</span>
+                {isMobileMenuOpen ? (
+                  <X className="block h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="block h-6 w-6" aria-hidden="true" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
       {isMobileMenuOpen && (
-        <div className="sm:hidden">
+        <div className="lg:hidden">
           <div className="pt-2 pb-3 space-y-1">
             {navigation.map((item) => {
               const isActive = pathname === item.href;
