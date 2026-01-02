@@ -437,7 +437,6 @@ export default function ArcheologyPage() {
                                         const totalWeight = OPTION_DATA.filter(opt =>
                                             item.OptionPool.split(';').map(id => parseInt(id.trim())).includes(opt.ClassID) && opt.Weight > 0
                                         ).reduce((sum, opt) => sum + opt.Weight, 0);
-                                        const optWeight = options.reduce((sum, opt) => sum + opt.Weight, 0);
 
                                         return (
                                             <div
@@ -453,8 +452,8 @@ export default function ArcheologyPage() {
                                                 <div className="flex gap-2 mt-1">
                                                     {options.slice(0, 1).map((opt, i) => (
                                                         <span key={i} className={`text-xs px-1.5 py-0.5 rounded ${opt.Grade === 1 ? 'bg-green-100 text-green-700' :
-                                                                opt.Grade === 2 ? 'bg-yellow-100 text-yellow-700' :
-                                                                    'bg-red-100 text-red-700'
+                                                            opt.Grade === 2 ? 'bg-yellow-100 text-yellow-700' :
+                                                                'bg-red-100 text-red-700'
                                                             }`}>
                                                             {opt.Grade === 1 ? 'Low' : opt.Grade === 2 ? 'Mid' : 'High'}: {opt.MinValue}~{opt.MaxValue} (W:{opt.Weight})
                                                         </span>

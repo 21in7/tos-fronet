@@ -37,6 +37,7 @@ const navigation = [
 const simulatorItems = [
   { name: '고고학 옵션', href: '/simulator/archeology', icon: Pickaxe },
   { name: '장비 강화', href: '/simulator/reinforce', icon: Hammer },
+  { name: '기어스코어', href: '/simulator/gearscore', icon: Calculator },
 ];
 
 export default function Header() {
