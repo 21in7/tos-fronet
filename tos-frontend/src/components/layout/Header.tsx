@@ -141,9 +141,9 @@ export default function Header() {
                         <Link
                           key={item.name}
                           href={item.href}
-                          className={`flex items-center px-4 py-2 text-sm ${isActive
+                          className={`flex items-center px-4 py-2 text-sm font-medium ${isActive
                             ? 'bg-indigo-50 text-indigo-700'
-                            : 'text-gray-700 hover:bg-gray-100'
+                            : 'text-gray-900 hover:bg-gray-100'
                             }`}
                         >
                           <item.icon className="w-4 h-4 mr-2" />
