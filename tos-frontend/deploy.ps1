@@ -51,7 +51,8 @@ $commands = @(
     "rm -rf node_modules",
     "npm install --production",
     "pm2 delete $PM2_NAME || true",
-    "PORT=3001 pm2 start server.js --name $PM2_NAME"
+    "PORT=3001 pm2 start server.js --name $PM2_NAME",
+    "pm2 save"
 )
 $commandString = $commands -join " && "
 

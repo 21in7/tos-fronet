@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import QueryProvider from '@/providers/QueryProvider';
+import LanguageProvider from '@/providers/LanguageProvider';
 import Layout from '@/components/layout/Layout';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -17,16 +18,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://r2.gihyeonofsoul.com" />
         <link rel="dns-prefetch" href="https://r2.gihyeonofsoul.com" />
       </head>
       <body className={inter.className}>
         <QueryProvider>
-          <Layout>
-            {children}
-          </Layout>
+          <LanguageProvider>
+            <Layout>
+              {children}
+            </Layout>
+          </LanguageProvider>
         </QueryProvider>
       </body>
     </html>

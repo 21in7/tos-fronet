@@ -138,3 +138,8 @@ dist
 
 # simul
 .simul/
+
+#plan
+docs/
+docs/*
+docs/task.md

@@ -39,3 +39,32 @@
 - 터치 친화적인 버튼 및 입력 필드
 - 가로 스크롤 없이 콘텐츠 표시
 - 텍스트 가독성 유지
+
+---
+
+# 다국어 시스템 (i18n) 구축 태스크
+
+## 목표
+ktos(한국어)/itos(영어)/jtos(일본어) 선택 가능한 다국어 시스템 구축
+
+## 진행 상태 ✅ 완료
+
+### 1. 언어 상태 관리
+- [x] useLanguageStore.ts 생성 (Zustand)
+
+### 2. 번역 시스템
+- [x] translations/ko.ts 생성
+- [x] translations/en.ts 생성
+- [x] translations/ja.ts 생성
+- [x] translations/index.ts 생성
+
+### 3. 언어 프로바이더
+- [x] LanguageProvider.tsx 생성
+- [x] layout.tsx에 LanguageProvider 적용
+
+### 4. 헤더 UI
+- [x] 언어 선택 드롭다운 추가 (kTOS/iTOS/jTOS 플래그)
+- [x] 네비게이션 텍스트 번역 적용
+
+### 5. 빌드 검증
+- [x] npm run build 성공 확인 (Exit code: 0)
