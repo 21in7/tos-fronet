@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { challengeModeAutoMapsApi } from '@/lib/api';
-import { ChallengeModeAutoMap, QueryParams } from '@/types/api';
+import { ChallengeModeAutoMap, QueryParams, Job } from '@/types/api';
 import ChallengeMapList from '@/components/challenge-mode/ChallengeMapList';
 
 export default function ChallengeModeAutoMapsPage() {
@@ -31,7 +31,7 @@ export default function ChallengeModeAutoMapsPage() {
                 const response = await import('@/lib/api').then(m => m.jobsApi.getAll());
                 if (response.success && Array.isArray(response.data)) {
                     // Filter base jobs or meaningful jobs if needed, but for now take all or sorted
-                    const sortedJobs = response.data.sort((a: any, b: any) => a.name.localeCompare(b.name));
+                    const sortedJobs = response.data.sort((a: Job, b: Job) => a.name.localeCompare(b.name));
                     setJobs(sortedJobs);
                 }
             } catch (error) {

@@ -142,7 +142,7 @@ export default function GameImage({
   }
 
   // Next.js Image component props construction
-  const imageProps: any = {
+  const baseImageProps = {
     src: fixedSrc,
     alt: alt,
     className: `transition-opacity duration-200 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`,
@@ -150,25 +150,29 @@ export default function GameImage({
     onLoad: handleImageLoad,
     unoptimized: true,
     priority: priority,
-    loading: priority ? 'eager' : 'lazy',
+    loading: priority ? 'eager' as const : 'lazy' as const,
     style: {
       objectFit: objectFit,
     }
   };
 
-  if (fill) {
-    imageProps.fill = true;
-    imageProps.sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"; // Default sizes
-  } else {
-    imageProps.width = width;
-    imageProps.height = height;
-  }
-
   return (
     <div className={`relative overflow-hidden rounded-lg ${className}`} style={fill ? { width: '100%', height: '100%' } : {}}>
-      <Image
-        {...imageProps}
-      />
+      {fill ? (
+        <Image
+          {...baseImageProps}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          alt={alt}
+        />
+      ) : (
+        <Image
+          {...baseImageProps}
+          width={width}
+          height={height}
+          alt={alt}
+        />
+      )}
 
       {/* 이미지가 로드되지 않았을 때 보여줄 백그라운드 */}
       {!isImageLoaded && !imageError && (

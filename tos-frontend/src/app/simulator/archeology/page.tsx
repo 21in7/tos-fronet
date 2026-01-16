@@ -434,9 +434,11 @@ export default function ArcheologyPage() {
                                 </div>
                                 <div className="space-y-2">
                                     {itemsWithSelectedOption.map(({ item, options }) => {
-                                        const totalWeight = OPTION_DATA.filter(opt =>
+                                        // 총 가중치 계산 (확률 계산 시 사용 가능)
+                                        const _totalWeight = OPTION_DATA.filter(opt =>
                                             item.OptionPool.split(';').map(id => parseInt(id.trim())).includes(opt.ClassID) && opt.Weight > 0
                                         ).reduce((sum, opt) => sum + opt.Weight, 0);
+                                        void _totalWeight; // 린트 경고 방지
 
                                         return (
                                             <div
