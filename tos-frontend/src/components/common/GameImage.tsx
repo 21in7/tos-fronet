@@ -10,6 +10,8 @@ interface GameImageProps {
   fallback?: string;
   type?: 'item' | 'monster' | 'skill' | 'job' | 'map' | 'attribute';
   priority?: boolean;
+  objectFit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down';
+  fill?: boolean;
 }
 
 export default function GameImage({
@@ -20,10 +22,14 @@ export default function GameImage({
   className = '',
   // fallback,
   type = 'item',
-  priority = false
+  priority = false,
+  objectFit = 'cover',
+  fill = false
 }: GameImageProps) {
   const [imageError, setImageError] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  // ... (keeping existing logic for R2_BASE_URL, fixIconUrl, etc.)
 
   // R2 스토리지 기본 URL
   const R2_BASE_URL = 'https://r2.gihyeonofsoul.com/icons';
@@ -122,10 +128,12 @@ export default function GameImage({
   const shouldShowFallback = !fixedSrc || !isValidImageUrl(fixedSrc) || imageError;
 
   if (shouldShowFallback) {
+    const fallbackStyle: React.CSSProperties = fill ? { width: '100%', height: '100%' } : { width, height };
+
     return (
       <div
         className={`relative overflow-hidden rounded-lg bg-gray-800/50 flex items-center justify-center border border-gray-700/50 ${className}`}
-        style={{ width, height }}
+        style={fallbackStyle}
         title={`${alt} (이미지 없음)`}
       >
         <span className="text-gray-400 text-2xl select-none">{getDefaultIcon()}</span>
@@ -133,24 +141,33 @@ export default function GameImage({
     );
   }
 
+  // Next.js Image component props construction
+  const imageProps: any = {
+    src: fixedSrc,
+    alt: alt,
+    className: `transition-opacity duration-200 ${isImageLoaded ? 'opacity-100' : 'opacity-0'}`,
+    onError: handleImageError,
+    onLoad: handleImageLoad,
+    unoptimized: true,
+    priority: priority,
+    loading: priority ? 'eager' : 'lazy',
+    style: {
+      objectFit: objectFit,
+    }
+  };
+
+  if (fill) {
+    imageProps.fill = true;
+    imageProps.sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"; // Default sizes
+  } else {
+    imageProps.width = width;
+    imageProps.height = height;
+  }
+
   return (
-    <div className={`relative overflow-hidden rounded-lg ${className}`}>
+    <div className={`relative overflow-hidden rounded-lg ${className}`} style={fill ? { width: '100%', height: '100%' } : {}}>
       <Image
-        src={fixedSrc}
-        alt={alt}
-        width={width}
-        height={height}
-        className={`object-cover transition-opacity duration-200 ${isImageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-        onError={handleImageError}
-        onLoad={handleImageLoad}
-        unoptimized={true} // 최적화 비활성화로 속도 개선
-        priority={priority}
-        loading={priority ? 'eager' : 'lazy'}
-        style={{
-          objectFit: 'cover',
-          // backgroundColor: '#f3f4f6' // Removed to fix white corners
-        }}
+        {...imageProps}
       />
 
       {/* 이미지가 로드되지 않았을 때 보여줄 백그라운드 */}

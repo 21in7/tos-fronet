@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import GameImage from '@/components/common/GameImage';
 
 interface ChallengeData {
     day: number;
@@ -51,17 +51,17 @@ export default function ChallengeCalendar() {
                         // Calculate day
                         const day = isEvenMonth ? map.id - 31 : map.id;
 
-                        // Use icon from API if available, otherwise try to construct from name or provide fallback
-                        // The user mentioned images are in R2 bucket under em/om
-                        // Assuming API 'icon' field or 'icon_url' might contain the filename or we can use the map name
-                        // For now, let's look at the 'icon' field from the new API. 
-                        // If the previous API 'image' field corresponded to a filename, we hope 'icon' does too.
-                        const imageName = map.icon || '';
+
+                        // User requested to use ID -> Image mapping
+                        // OM: Use ID directly (1-31)
+                        // EM: Use mapped ID (32-62 -> 1-31)
+                        // This matches our 'day' variable.
+                        // Images are stored as 01.jpg, 02.jpg, etc.
 
                         return {
                             day,
                             mapName: map.name,
-                            mapImage: imageName ? `${baseUrl}${imageName}` : undefined
+                            mapImage: `${baseUrl}${String(day).padStart(2, '0')}.jpg`
                         };
                     });
 
@@ -182,16 +182,21 @@ export default function ChallengeCalendar() {
 
                         <div className="relative aspect-video w-full bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
                             {selectedMap.mapImage ? (
-                                <Image
-                                    src={selectedMap.mapImage}
-                                    alt={selectedMap.mapName}
-                                    fill
-                                    className="object-contain"
-                                    unoptimized // Assuming external images or untrusted optimization
-                                />
+                                <div className="relative w-full h-full">
+                                    <GameImage
+                                        src={selectedMap.mapImage}
+                                        alt={selectedMap.mapName}
+                                        className="object-contain" // GameImage typically needs dimensions or fill, check prop
+                                        fill={true}
+                                        priority={true}
+                                        type="map"
+                                        objectFit="contain"
+                                    />
+                                </div>
                             ) : (
                                 <div className="text-gray-500">이미지가 없습니다</div>
                             )}
+
                         </div>
                     </div>
                 </div>

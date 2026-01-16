@@ -1,9 +1,4 @@
-import {
-  ApiResponse,
-  Job,
-  QueryParams,
-  DRFPaginatedResponse,
-} from '@/types/api';
+import { ApiResponse, Job, QueryParams, DRFPaginatedResponse } from '@/types/api';
 
 // API 기본 URL 설정 - Next.js rewrites를 통해 프록시
 // 개발 환경에서는 /api로 요청하면 Next.js가 실제 API 서버로 프록시
@@ -221,6 +216,6 @@ export const challengeModeAutoMapsApi = {
 export const dashboardApi = {
   getStats: () => apiClient.get('/dashboard/stats'),
   getRecent: () => apiClient.get('/dashboard/recent'),
-  getStatus: () => apiClient.get('/dashboard/status'),
+  getStatus: () => apiClient.get('/jobs?limit=1'), // /dashboard/status가 없으므로 jobs로 대체하여 연결 확인
   getTables: () => apiClient.get('/dashboard/tables'),
 };
