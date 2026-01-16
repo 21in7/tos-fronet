@@ -27,8 +27,11 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
 
     const skills = useMemo(() => {
         if (!skillsResponse?.data || !Array.isArray(skillsResponse.data)) return [];
-        return skillsResponse.data;
-    }, [skillsResponse]);
+        // API가 job_id로 필터링하지 않으므로, 프론트엔드에서 필터링
+        return skillsResponse.data.filter((skill: Skill) =>
+            skill.job && skill.job.id === job.id
+        );
+    }, [skillsResponse, job.id]);
 
     const allocatedSp = getAllocatedSp(job.id);
     const maxSp = slotIndex === 0 ? 15 : 66; // 15 for base, 66 for sub

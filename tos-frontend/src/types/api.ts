@@ -193,6 +193,18 @@ export interface Skill {
   effects?: Record<string, unknown>;
   requirements?: Record<string, unknown>;
   job_id?: number;
+  job?: {              // API 응답에 포함된 중첩 job 객체
+    id: number;
+    ids: string;
+    id_name: string;
+    name: string;
+    icon?: string;
+    job_tree?: string;
+    is_starter?: boolean;
+    descriptions?: string;
+    created?: string;
+    updated?: string;
+  };
   icon?: string;      // 아이콘 파일명 (예: "icon_scout_blooderuption")
   icon_url?: string;  // 전체 아이콘 URL (deprecated, icon 사용 권장)
   created?: string;
