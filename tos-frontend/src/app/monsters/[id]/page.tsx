@@ -86,7 +86,7 @@ export default function MonsterDetailPage() {
               {/* 몬스터 이미지 */}
               <div className="flex-shrink-0">
                 <GameImage
-                  src={monster.icon_url}
+                  src={monster.icon || monster.icon_url}
                   alt={monster.name}
                   width={128}
                   height={128}

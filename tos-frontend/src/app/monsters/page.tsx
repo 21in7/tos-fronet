@@ -193,7 +193,7 @@ export default function MonstersPage() {
             <div key={monster.id} className="bg-white shadow rounded-lg p-6">
               <div className="flex items-start space-x-4">
                 <GameImage
-                  src={monster.icon_url}
+                  src={monster.icon || monster.icon_url}
                   alt={monster.name}
                   width={48}
                   height={48}

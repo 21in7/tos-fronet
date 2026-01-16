@@ -115,7 +115,7 @@ export default function SkillDetailPage() {
               {/* 스킬 이미지 */}
               <div className="flex-shrink-0">
                 <GameImage
-                  src={skill.icon_url}
+                  src={skill.icon || skill.icon_url}
                   alt={skill.name}
                   width={128}
                   height={128}
@@ -207,7 +207,7 @@ export default function SkillDetailPage() {
                 <div key={attr.id} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                   <div className="flex items-start space-x-3">
                     <GameImage
-                      src={attr.icon_url}
+                      src={attr.icon || attr.icon_url}
                       alt={attr.name}
                       width={48}
                       height={48}

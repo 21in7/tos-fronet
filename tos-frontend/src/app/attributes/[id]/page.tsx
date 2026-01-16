@@ -172,7 +172,7 @@ export default function AttributeDetailPage() {
           <div className="flex justify-center">
             <div className="relative">
               <GameImage
-                src={attribute.icon_url}
+                src={attribute.icon || attribute.icon_url}
                 alt={attribute.name}
                 width={200}
                 height={200}

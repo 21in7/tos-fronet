@@ -115,7 +115,7 @@ export default function BuffDetailPage() {
                 </span>
               )}
             </div>
-            
+
             {/* 설명 */}
             {buff.descriptions && (
               <div className="mb-6 p-4 bg-gray-50 rounded-lg">
@@ -209,7 +209,7 @@ export default function BuffDetailPage() {
                   <p className="text-2xl font-bold text-blue-600">{buff.duration}초</p>
                 </div>
               )}
-              
+
               {buff.cooldown && (
                 <div className="bg-orange-50 p-4 rounded-lg">
                   <div className="flex items-center mb-2">
@@ -239,7 +239,7 @@ export default function BuffDetailPage() {
           <div className="flex justify-center">
             <div className="relative">
               <GameImage
-                src={buff.icon_url}
+                src={buff.icon || buff.icon_url}
                 alt={buff.name}
                 width={200}
                 height={200}

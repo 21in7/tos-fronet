@@ -193,7 +193,8 @@ export interface Skill {
   effects?: Record<string, unknown>;
   requirements?: Record<string, unknown>;
   job_id?: number;
-  icon_url?: string;
+  icon?: string;      // 아이콘 파일명 (예: "icon_scout_blooderuption")
+  icon_url?: string;  // 전체 아이콘 URL (deprecated, icon 사용 권장)
   created?: string;
   updated?: string;
   created_at: string;
@@ -212,7 +213,8 @@ export interface Job {
   job_tree?: string;
   requirements?: Record<string, unknown>;
   bonuses?: Record<string, unknown>;
-  icon_url?: string;
+  icon?: string;      // 아이콘 파일명 (예: "c_scout_grimmark")
+  icon_url?: string;  // 전체 아이콘 URL (deprecated, icon 사용 권장)
   created_at: string;
   updated_at: string;
 }
@@ -226,7 +228,8 @@ export interface Map {
   level: number;
   monsters: number[];
   rewards: Record<string, unknown>;
-  icon_url?: string;
+  icon?: string;      // 아이콘 파일명
+  icon_url?: string;  // 전체 아이콘 URL
   created_at: string;
   updated_at: string;
 }

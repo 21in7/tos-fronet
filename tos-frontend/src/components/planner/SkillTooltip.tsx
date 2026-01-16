@@ -54,7 +54,7 @@ export default function SkillTooltip({ skill }: SkillTooltipProps) {
             {/* Header */}
             <div className="flex items-center gap-4 mb-4 pb-4 border-b border-gray-700/50">
                 <GameImage
-                    src={skill.icon_url}
+                    src={skill.icon || skill.icon_url}
                     alt={skill.name}
                     width={48}
                     height={48}
@@ -84,7 +84,7 @@ export default function SkillTooltip({ skill }: SkillTooltipProps) {
                         {attributes.map(attr => (
                             <div key={attr.id} className="flex gap-3 bg-gray-800/40 p-2 rounded-lg border border-gray-700/30">
                                 <GameImage
-                                    src={attr.icon_url}
+                                    src={attr.icon || attr.icon_url}
                                     alt={attr.name}
                                     width={32}
                                     height={32}

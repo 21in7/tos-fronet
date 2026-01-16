@@ -146,7 +146,7 @@ export default function JobSelectionModal({
                                                 className="flex flex-col items-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
                                             >
                                                 <GameImage
-                                                    src={job.icon_url}
+                                                    src={job.icon || job.icon_url}
                                                     alt={job.name}
                                                     width={40}
                                                     height={40}

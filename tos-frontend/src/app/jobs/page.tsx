@@ -177,7 +177,7 @@ export default function JobsPage() {
                 <div key={job.id} className="bg-white shadow rounded-lg p-6">
                   <div className="flex items-start space-x-4">
                     <GameImage
-                      src={job.icon_url}
+                      src={job.icon || job.icon_url}
                       alt={job.name}
                       width={48}
                       height={48}
@@ -240,7 +240,7 @@ export default function JobsPage() {
                                     <div key={skill.id} className="flex items-center space-x-2 text-sm">
                                       <div className="w-8 h-8">
                                         <GameImage
-                                          src={skill.icon_url}
+                                          src={skill.icon || skill.icon_url}
                                           alt={skill.name}
                                           width={32}
                                           height={32}

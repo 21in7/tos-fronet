@@ -112,7 +112,7 @@ export default function JobDetailPage() {
               {/* 직업 이미지 */}
               <div className="flex-shrink-0">
                 <GameImage
-                  src={job.icon_url}
+                  src={job.icon || job.icon_url}
                   alt={job.name}
                   width={128}
                   height={128}
@@ -201,7 +201,7 @@ export default function JobDetailPage() {
                 >
                   <div className="flex-shrink-0">
                     <GameImage
-                      src={skill.icon_url}
+                      src={skill.icon || skill.icon_url}
                       alt={skill.name}
                       width={40}
                       height={40}

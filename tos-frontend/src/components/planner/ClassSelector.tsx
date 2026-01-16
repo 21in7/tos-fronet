@@ -58,7 +58,7 @@ export default function ClassSelector() {
                             {job ? (
                                 <>
                                     <GameImage
-                                        src={job.icon_url}
+                                        src={job.icon || job.icon_url}
                                         alt={job.name}
                                         width={40}
                                         height={40}

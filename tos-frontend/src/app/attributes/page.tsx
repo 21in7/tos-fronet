@@ -201,7 +201,7 @@ export default function AttributesPage() {
                     {/* 특성 아이콘 */}
                     <div className="flex-shrink-0">
                       <GameImage
-                        src={attribute.icon_url}
+                        src={attribute.icon || attribute.icon_url}
                         alt={attribute.name}
                         width={48}
                         height={48}

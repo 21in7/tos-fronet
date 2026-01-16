@@ -25,19 +25,37 @@ export default function GameImage({
   const [imageError, setImageError] = useState(false);
   const [isImageLoaded, setIsImageLoaded] = useState(false);
 
-  // URL 경로 수정 함수 (icon -> icons)
+  // R2 스토리지 기본 URL
+  const R2_BASE_URL = 'https://r2.gihyeonofsoul.com/icons';
+
+  // URL 경로 수정 함수 (icon -> icons, 또는 아이콘 이름을 전체 URL로 변환)
   const fixIconUrl = (url?: string): string | undefined => {
     if (!url) return url;
 
-    // https://r2.gihyeonofsoul.com/icon/ -> https://r2.gihyeonofsoul.com/icons/
-    const fixedUrl = url.replace('/icon/', '/icons/');
+    // 이미 전체 URL인 경우 (http:// 또는 https://로 시작)
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      // https://r2.gihyeonofsoul.com/icon/ -> https://r2.gihyeonofsoul.com/icons/
+      const fixedUrl = url.replace('/icon/', '/icons/');
 
-    // 디버깅용 로그 (URL이 변경된 경우만)
-    if (fixedUrl !== url) {
-      console.log(`🔧 URL 수정: ${url} → ${fixedUrl}`);
+      // 디버깅용 로그 (URL이 변경된 경우만)
+      if (fixedUrl !== url) {
+        console.log(`🔧 URL 수정: ${url} → ${fixedUrl}`);
+      }
+
+      return fixedUrl;
     }
 
-    return fixedUrl;
+    // 아이콘 이름만 있는 경우 (예: "icon_scout_blooderuption", "c_scout_grimmark")
+    // 전체 URL로 변환
+    const iconName = url.trim();
+
+    // 이미 확장자가 있는 경우
+    if (iconName.match(/\.(png|jpg|jpeg|gif|webp|svg)$/i)) {
+      return `${R2_BASE_URL}/${iconName}`;
+    }
+
+    // 확장자가 없는 경우 .png 추가
+    return `${R2_BASE_URL}/${iconName}.png`;
   };
 
   // 수정된 URL
@@ -81,15 +99,23 @@ export default function GameImage({
     setImageError(false);
   };
 
-  // URL 유효성 검사
+  // URL 유효성 검사 (아이콘 이름도 유효하다고 판단)
   const isValidImageUrl = (url?: string): boolean => {
     if (!url) return false;
-    try {
-      new URL(url);
-      return url.match(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i) !== null;
-    } catch {
-      return false;
+
+    // 이미 전체 URL인 경우
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      try {
+        new URL(url);
+        return url.match(/\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i) !== null;
+      } catch {
+        return false;
+      }
     }
+
+    // 아이콘 이름인 경우 (icon_, c_ 등으로 시작하거나 알파벳/숫자/_로 구성)
+    // fixIconUrl에서 전체 URL로 변환될 것이므로 유효하다고 판단
+    return /^[a-zA-Z0-9_-]+$/.test(url.trim());
   };
 
   // 이미지를 보여줄 수 없는 경우들

@@ -100,7 +100,7 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
             <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex justify-between items-center rounded-t-lg">
                 <div className="flex items-center space-x-3">
                     <GameImage
-                        src={job.icon_url}
+                        src={job.icon || job.icon_url}
                         alt={job.name}
                         width={32}
                         height={32}
@@ -134,7 +134,7 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
                                 onMouseLeave={() => setHoveredSkillId(null)}
                             >
                                 <GameImage
-                                    src={skill.icon_url}
+                                    src={skill.icon || skill.icon_url}
                                     alt={skill.name}
                                     width={40}
                                     height={40}

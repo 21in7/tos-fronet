@@ -257,7 +257,7 @@ export default function ItemDetailPage() {
           <div className="flex justify-center">
             <div className="relative">
               <GameImage
-                src={item.icon_url}
+                src={item.icon || item.icon_url}
                 alt={item.name}
                 width={200}
                 height={200}

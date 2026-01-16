@@ -191,7 +191,7 @@ export default function ItemsPage() {
               <div key={item.id} className="bg-white shadow rounded-lg p-6 hover:shadow-lg transition-shadow">
                 <div className="flex items-start space-x-4">
                   <GameImage
-                    src={item.icon_url}
+                    src={item.icon || item.icon_url}
                     alt={item.name}
                     width={48}
                     height={48}

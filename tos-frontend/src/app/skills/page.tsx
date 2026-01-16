@@ -62,7 +62,7 @@ export default function SkillsPage() {
             <div key={skill.id} className="bg-white shadow rounded-lg p-6">
               <div className="flex items-start space-x-4">
                 <GameImage
-                  src={skill.icon_url}
+                  src={skill.icon || skill.icon_url}
                   alt={skill.name}
                   width={48}
                   height={48}
@@ -78,8 +78,8 @@ export default function SkillsPage() {
                         </h3>
                       </Link>
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${skill.type === 'active'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-green-100 text-green-800'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-green-100 text-green-800'
                         }`}>
                         {skill.type === 'active' ? '액티브' : '패시브'}
                       </span>

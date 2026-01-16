@@ -55,7 +55,7 @@ export default function MapsPage() {
             <div key={map.id} className="bg-white shadow rounded-lg p-6">
               <div className="flex items-start space-x-4">
                 <GameImage
-                  src={map.icon_url}
+                  src={map.icon || map.icon_url}
                   alt={map.name}
                   width={48}
                   height={48}
