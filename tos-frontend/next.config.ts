@@ -29,14 +29,24 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  // trailingSlash 설정 - Django REST Framework 호환
+  trailingSlash: true,
+
   // API 프록시 설정 - CORS 문제를 해결하기 위해 Next.js에서 프록시
   async rewrites() {
     const apiServerUrl = process.env.API_SERVER_URL || 'https://gihyeonofsoul.com';
+    console.log('[Next.js] API 프록시 대상:', apiServerUrl);
 
     return [
+      // trailing slash 있는 경우
+      {
+        source: '/api/:path*/',
+        destination: `${apiServerUrl}/api/:path*/`,
+      },
+      // trailing slash 없는 경우 -> trailing slash 추가
       {
         source: '/api/:path*',
-        destination: `${apiServerUrl}/api/:path*`,
+        destination: `${apiServerUrl}/api/:path*/`,
       },
     ];
   },

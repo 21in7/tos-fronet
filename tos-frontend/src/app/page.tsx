@@ -1,136 +1,100 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
-import { dashboardApi } from '@/lib/api';
-import { DashboardStats, DashboardStatus } from '@/types/api';
-import StatsCard from '@/components/dashboard/StatsCard';
-import LoadingSpinner from '@/components/common/LoadingSpinner';
-import ErrorBoundary from '@/components/common/ErrorBoundary';
-import {
-  BarChart3,
-  Sword,
-  Skull,
-  Zap,
-  Briefcase,
-  Map,
-  Shield,
-  Trophy
-} from 'lucide-react';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Search, Sword, Users, Sparkles, Map, BookOpen } from 'lucide-react';
+import Link from 'next/link';
+import { useLanguageStore, VERSION_LANGUAGE_MAP } from '@/store/useLanguageStore';
 
-export default function Dashboard() {
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['dashboard', 'stats'],
-    queryFn: () => dashboardApi.getStats(),
-  });
+const quickLinks = [
+  { href: '/jobs', icon: Users, labelKo: '직업', labelEn: 'Jobs', color: 'from-blue-500 to-blue-600' },
+  { href: '/skills', icon: Sparkles, labelKo: '스킬', labelEn: 'Skills', color: 'from-purple-500 to-purple-600' },
+  { href: '/items', icon: Sword, labelKo: '아이템', labelEn: 'Items', color: 'from-green-500 to-green-600' },
+  { href: '/maps', icon: Map, labelKo: '맵', labelEn: 'Maps', color: 'from-orange-500 to-orange-600' },
+  { href: '/attributes', icon: BookOpen, labelKo: '특성', labelEn: 'Attributes', color: 'from-red-500 to-red-600' },
+];
 
-  const { data: statusData } = useQuery({
-    queryKey: ['dashboard', 'status'],
-    queryFn: () => dashboardApi.getStatus(),
-  });
+export default function HomePage() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
+  const { gameVersion } = useLanguageStore();
+  const language = VERSION_LANGUAGE_MAP[gameVersion];
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-red-600 text-lg font-semibold mb-2">
-          데이터를 불러올 수 없습니다
-        </div>
-        <div className="text-gray-600 mb-4">
-          {error.message || 'API 서버가 실행 중인지 확인해주세요.'}
-        </div>
-        <div className="text-sm text-gray-500">
-          데이터베이스 테이블이 생성되지 않았을 수 있습니다.
-        </div>
-      </div>
-    );
-  }
-
-  const stats = data?.data as DashboardStats;
-  const status = statusData?.data as DashboardStatus;
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // 검색어가 있으면 아이템 페이지로 이동 (기본 검색)
+      router.push(`/items?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
   return (
-    <ErrorBoundary>
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">대시보드</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            트리오브세이비어 게임 데이터 현황을 확인하세요.
-          </p>
-        </div>
+    <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
+      {/* Hero Section */}
+      <div className="text-center mb-8">
+        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
+          Gihyeon of Soul
+        </h1>
+        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          {language === 'ko'
+            ? '트리 오브 세이비어 데이터베이스에서 원하는 정보를 검색하세요'
+            : 'Search the Tree of Savior database for the information you need'}
+        </p>
+      </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
-          <StatsCard
-            title="현재 게임 버전"
-            value={status?.version || '확인 중...'}
-            icon={BarChart3}
-            color="purple"
-          />
-          <StatsCard
-            title="총 특성 수"
-            value={stats?.attributes || 0}
-            icon={BarChart3}
-            color="blue"
-          />
-          <StatsCard
-            title="총 아이템 수"
-            value={stats?.items || 0}
-            icon={Sword}
-            color="green"
-          />
-          <StatsCard
-            title="총 몬스터 수"
-            value={stats?.monsters || 0}
-            icon={Skull}
-            color="red"
-          />
-          <StatsCard
-            title="총 스킬 수"
-            value={stats?.skills || 0}
-            icon={Zap}
-            color="yellow"
-          />
-          <StatsCard
-            title="총 직업 수"
-            value={stats?.jobs || 0}
-            icon={Briefcase}
-            color="purple"
-          />
-          <StatsCard
-            title="총 맵 수"
-            value={stats?.maps || 0}
-            icon={Map}
-            color="blue"
-          />
-          <StatsCard
-            title="총 버프 수"
-            value={stats?.buffs || 0}
-            icon={Shield}
-            color="green"
-          />
-          <StatsCard
-            title="총 업적 수"
-            value={stats?.achievements || 0}
-            icon={Trophy}
-            color="yellow"
-          />
-        </div>
-
-        <div className="bg-white shadow rounded-lg p-6">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">
-            최근 활동
-          </h2>
-          <div className="text-gray-500 text-sm">
-            최근 추가된 데이터가 여기에 표시됩니다.
+      {/* Search Box */}
+      <form onSubmit={handleSearch} className="w-full max-w-2xl mb-12">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-gray-400" />
           </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={language === 'ko' ? '아이템, 스킬, 몬스터 등 검색...' : 'Search items, skills, monsters...'}
+            className="block w-full pl-12 pr-4 py-4 text-lg border-2 border-gray-200 rounded-2xl 
+                       focus:ring-2 focus:ring-blue-500 focus:border-blue-500 
+                       shadow-lg hover:shadow-xl transition-shadow
+                       bg-white placeholder-gray-400"
+          />
+          <button
+            type="submit"
+            className="absolute inset-y-2 right-2 px-6 bg-gradient-to-r from-blue-500 to-blue-600 
+                       text-white font-medium rounded-xl hover:from-blue-600 hover:to-blue-700 
+                       transition-all shadow-md hover:shadow-lg"
+          >
+            {language === 'ko' ? '검색' : 'Search'}
+          </button>
+        </div>
+      </form>
+
+      {/* Quick Links */}
+      <div className="w-full max-w-3xl">
+        <h2 className="text-center text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
+          {language === 'ko' ? '빠른 탐색' : 'Quick Navigation'}
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {quickLinks.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`flex flex-col items-center justify-center p-4 rounded-xl 
+                           bg-gradient-to-br ${link.color} text-white
+                           hover:scale-105 hover:shadow-lg transition-all duration-200
+                           shadow-md`}
+              >
+                <Icon className="h-6 w-6 mb-2" />
+                <span className="text-sm font-medium">
+                  {language === 'ko' ? link.labelKo : link.labelEn}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </div>
-    </ErrorBoundary>
+    </div>
   );
 }
