@@ -1,9 +1,9 @@
-import { ApiResponse, QueryParams } from '@/types/api';
+import { ApiResponse, QueryParams, DRFPaginatedResponse } from '@/types/api';
 
-// Next.js rewrites를 통한 API 프록시 사용 (개발 환경) 또는 직접 호출 (정적 배포)
+// API 기본 URL 설정 - Django REST Framework API 사용
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
   ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-  : '/api';
+  : 'https://gihyeonofsoul.com/api';
 
 class ApiClient {
   private baseURL: string;
@@ -19,6 +19,7 @@ class ApiClient {
     const url = `${this.baseURL}${endpoint}`;
 
     const config: RequestInit = {
+      mode: 'cors',
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -31,7 +32,7 @@ class ApiClient {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const errorMessage = errorData.message || `HTTP ${response.status}: ${response.statusText}`;
+        const errorMessage = errorData.message || errorData.detail || `HTTP ${response.status}: ${response.statusText}`;
 
         // 더 구체적인 에러 메시지 제공
         if (response.status === 400) {
@@ -47,12 +48,33 @@ class ApiClient {
 
       const data = await response.json();
 
-      // API 응답이 에러인 경우 처리
-      if (data.error) {
-        throw new Error(data.error);
+      // Django REST Framework 페이지네이션 응답 형식 처리
+      if (data && typeof data === 'object' && 'results' in data && 'count' in data) {
+        // DRF 페이지네이션 응답을 ApiResponse 형식으로 변환
+        const drfResponse = data as DRFPaginatedResponse<T>;
+        return {
+          success: true,
+          message: 'OK',
+          data: drfResponse.results as T,
+          pagination: {
+            page: 1,
+            limit: drfResponse.results.length,
+            total: drfResponse.count,
+            totalPages: Math.ceil(drfResponse.count / (drfResponse.results.length || 1)),
+            hasNext: drfResponse.next !== null,
+            hasPrev: drfResponse.previous !== null,
+          },
+          timestamp: new Date().toISOString(),
+        } as ApiResponse<T>;
       }
 
-      return data;
+      // 단일 객체 응답 (상세 조회 등)
+      return {
+        success: true,
+        message: 'OK',
+        data: data as T,
+        timestamp: new Date().toISOString(),
+      } as ApiResponse<T>;
     } catch (error) {
       // API 서버가 실행되지 않은 경우 더 친화적인 에러 메시지
       if (error instanceof TypeError && error.message.includes('Failed to fetch')) {
@@ -75,8 +97,10 @@ class ApiClient {
       });
     }
 
+    // Django REST Framework requires trailing slash
+    const normalizedEndpoint = endpoint.endsWith('/') ? endpoint : `${endpoint}/`;
     const queryString = searchParams.toString();
-    const url = queryString ? `${endpoint}?${queryString}` : endpoint;
+    const url = queryString ? `${normalizedEndpoint}?${queryString}` : normalizedEndpoint;
 
     return this.request<T>(url, { method: 'GET' });
   }

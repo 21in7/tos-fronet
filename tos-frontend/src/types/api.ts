@@ -1,3 +1,11 @@
+// Django REST Framework 페이지네이션 응답 타입
+export interface DRFPaginatedResponse<T> {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+}
+
 // API 응답 기본 타입
 export interface ApiResponse<T> {
   success: boolean;
