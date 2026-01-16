@@ -4,7 +4,7 @@ import { Fragment, useState, useMemo } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { jobsApi } from '@/lib/api';
-import { Job } from '@/types/api';
+import { Job, QueryParams } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
 import { Search, X } from 'lucide-react';
 
@@ -25,9 +25,25 @@ export default function JobSelectionModal({
 }: JobSelectionModalProps) {
     const [searchQuery, setSearchQuery] = useState('');
 
+    // Determine query parameters based on slot index
+    const isBaseClassSelection = slotIndex === 0;
+
+    // Fetch jobs using is_starter filter from API
     const { data: jobsResponse, isLoading } = useQuery({
-        queryKey: ['jobs-all'], // We might want to cache this heavily
-        queryFn: () => jobsApi.getAll({ limit: 1000 }), // get all jobs
+        queryKey: ['jobs', isBaseClassSelection ? 'starter' : 'advanced', baseJob?.job_tree],
+        queryFn: async () => {
+            if (isBaseClassSelection) {
+                // Fetch only base classes
+                return jobsApi.getAll({ is_starter: true, limit: 100 });
+            } else {
+                // Fetch advanced classes, filter by job_tree if baseJob is selected
+                const params: QueryParams = { is_starter: false, limit: 200 };
+                if (baseJob?.job_tree) {
+                    params.job_tree = baseJob.job_tree;
+                }
+                return jobsApi.getAll(params);
+            }
+        },
         staleTime: 1000 * 60 * 60, // 1 hour
     });
 
@@ -42,42 +58,15 @@ export default function JobSelectionModal({
             const matchesSearch = job.name.toLowerCase().includes(searchQuery.toLowerCase());
             if (!matchesSearch) return false;
 
-            // 2. Rank/Type filter configuration
-            // Assuming 'Rank 1' or similar string for Base Classes
-            // We might need to inspect actual data. For now, let's use a heuristic:
-            // If slotIndex === 0, we want Base Classes.
-            // In ToS, base classes are usually the starting ones. 
-            // Let's assume there is a way to distinguish. 
-            // If 'rank' exists and string, maybe "Rank 1".
-            // EDIT: From previous file view, Job has 'rank'. 
-
-            // Heuristic: 
-            // Base classes: Swordsman, Wizard, Archer, Cleric, Scout.
-            // We can check if name is in this set OR if rank is '1' (if rank is number) or 'Rank 1'.
-            const baseClassNames = [
-                'Swordsman', 'Wizard', 'Archer', 'Cleric', 'Scout',
-                '소드맨', '위자드', '위저드', '아처', '클레릭', '스카우트', 'Mage'
-            ];
-
-            if (slotIndex === 0) {
-                // Only show base classes - Strict name matching
-                return baseClassNames.includes(job.name);
-            } else {
-                // Sub classes
-                // Should not be a base class
-                if (baseClassNames.includes(job.name) || job.rank === 'Rank 1') return false;
-
-                // If we have a baseJob selected, we might want to filter by job_tree (class type)
-                // e.g. If Swordsman selected, only show Warrior type classes.
-                // job.job_tree often contains the class branch name.
-                if (baseJob?.job_tree && job.job_tree) {
-                    return job.job_tree === baseJob.job_tree;
-                }
-
-                return true;
+            // 2. Job Tree Filter (Client-side fallback)
+            // Even if API filters, double check or essential if API doesn't support job_tree filter yet
+            if (baseJob?.job_tree && job.job_tree) {
+                return job.job_tree === baseJob.job_tree;
             }
+
+            return true;
         });
-    }, [jobs, searchQuery, slotIndex, baseJob]);
+    }, [jobs, searchQuery, baseJob]);
 
     return (
         <Transition appear show={isOpen} as={Fragment}>

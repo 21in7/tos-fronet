@@ -217,12 +217,14 @@ export interface Skill {
 export interface Job {
   id: number;
   ids: number;
+  id_name?: string;        // 직업 식별자 (예: "Char5_1")
   name: string;
   description?: string;
   descriptions?: string;
   type?: string;
   rank?: string;
   job_tree?: string;
+  is_starter?: boolean;    // 기본 직업 여부 (소드맨, 위자드, 아처, 클레릭, 스카우트)
   requirements?: Record<string, unknown>;
   bonuses?: Record<string, unknown>;
   icon?: string;      // 아이콘 파일명 (예: "c_scout_grimmark")
@@ -287,4 +289,6 @@ export interface QueryParams {
   id?: number;
   ids?: string;
   job_id?: number;
+  is_starter?: boolean;
+  job_tree?: string;
 }
