@@ -11,6 +11,25 @@ import Pagination from '@/components/common/Pagination';
 import { Zap, Clock, Droplets, ExternalLink } from 'lucide-react';
 import GameImage from '@/components/common/GameImage';
 
+// 스킬 계수 배열 파싱 헬퍼
+const parseJsonArray = (jsonStr: string | null | undefined): number[] => {
+  if (!jsonStr) return [];
+  try {
+    return JSON.parse(jsonStr);
+  } catch {
+    return [];
+  }
+};
+
+// 마스터 레벨에 해당하는 스킬 계수 가져오기
+const getSkillFactorAtMaxLevel = (skill: Skill): number | null => {
+  const maxLevel = skill.max_lv || skill.max_level || skill.level || 5;
+  const arr = parseJsonArray(skill.sfr);
+  if (arr.length === 0) return null;
+  const index = Math.max(0, Math.min(maxLevel - 1, arr.length - 1));
+  return arr[index];
+};
+
 export default function SkillsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
@@ -94,23 +113,29 @@ export default function SkillsPage() {
                   <div className="mt-3 space-y-2">
                     <div className="flex items-center text-sm text-gray-600">
                       <span className="font-medium">레벨:</span>
-                      <span className="ml-2">{skill.level}</span>
+                      <span className="ml-2">{skill.max_lv || skill.max_level || skill.level || '-'}</span>
                     </div>
                     {skill.type === 'active' && (
                       <>
                         <div className="flex items-center text-sm text-gray-600">
                           <Clock className="w-4 h-4 text-gray-400 mr-2" />
-                          <span>쿨다운: {skill.cooldown}초</span>
+                          <span>쿨다운: {skill.cooldown ? `${(skill.cooldown / 1000).toFixed(1)}초` : '-'}</span>
                         </div>
                         <div className="flex items-center text-sm text-gray-600">
                           <Droplets className="w-4 h-4 text-blue-400 mr-2" />
-                          <span>마나 비용: {skill.mana_cost}</span>
+                          <span>SP: {skill.sp || '-'}</span>
                         </div>
                       </>
                     )}
                     <div className="flex items-center text-sm text-gray-600">
                       <Zap className="w-4 h-4 text-yellow-500 mr-2" />
-                      <span>데미지: {skill.damage}</span>
+                      <span>데미지: {(() => {
+                        const skillFactor = getSkillFactorAtMaxLevel(skill);
+                        if (skillFactor !== null) {
+                          return `${skillFactor.toLocaleString()}%`;
+                        }
+                        return skill.damage || '-';
+                      })()}</span>
                     </div>
                   </div>
                 </div>
