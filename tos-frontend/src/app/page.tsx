@@ -116,19 +116,23 @@ export default function HomePage() {
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
           </div>
         ) : versions && versions.length > 0 ? (
-          <div className="relative">
-            <div className="flex flex-wrap justify-center gap-2 max-h-32 overflow-y-auto p-2">
-              {versions.map((version) => (
-                <Link
-                  key={version}
-                  href={`/items?version=${version}`}
-                  className="px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 
-                             hover:bg-blue-100 hover:text-blue-700 transition-colors border border-gray-200"
-                >
-                  {version.replace('.ipf', '')}
-                </Link>
-              ))}
+          <div className="flex flex-col items-center justify-center space-y-4">
+            <div className="relative w-full max-w-xs">
+              <select
+                className="block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                defaultValue={versions[0]}
+                onChange={(e) => router.push(`/items?version=${e.target.value}`)}
+              >
+                {versions.map((version) => (
+                  <option key={version} value={version}>
+                    {version.replace('.ipf', '')}
+                  </option>
+                ))}
+              </select>
             </div>
+            <p className="text-xs text-gray-500">
+              {language === 'ko' ? '버전을 선택하면 해당 버전의 아이템 정보를 볼 수 있습니다.' : 'Select a version to view item information for that version.'}
+            </p>
           </div>
         ) : (
           <div className="text-center text-gray-400 text-sm">
