@@ -1,6 +1,6 @@
 import { ChallengeModeAutoMap } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
-import Link from 'next/link';
+
 
 interface ChallengeMapListProps {
     maps: ChallengeModeAutoMap[];

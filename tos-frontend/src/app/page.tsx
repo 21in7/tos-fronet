@@ -124,10 +124,13 @@ export default function HomePage() {
                 onChange={(e) => router.push(`/items?version=${e.target.value}`)}
               >
                 {versions.map((version, index) => {
-                  const versionStr = typeof version === 'string' ? version : JSON.stringify(version);
+                  // version 객체에서 version 속성 추출
+                  const versionValue = typeof version === 'object' && version !== null
+                    ? (version as { version?: string }).version || ''
+                    : String(version);
                   return (
-                    <option key={`${versionStr}-${index}`} value={versionStr}>
-                      {versionStr.replace('.ipf', '')}
+                    <option key={`${versionValue}-${index}`} value={versionValue}>
+                      {versionValue.replace('.ipf', '')}
                     </option>
                   );
                 })}

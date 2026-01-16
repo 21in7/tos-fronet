@@ -4,7 +4,7 @@ import { Suspense, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 import { jobsApi } from '@/lib/api';
-import { Job } from '@/types/api';
+
 import ClassSelector from '@/components/planner/ClassSelector';
 import SkillPanel from '@/components/planner/SkillPanel';
 import { usePlannerStore } from '@/store/usePlannerStore';

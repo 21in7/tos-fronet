@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { skillsApi, attributesApi } from '@/lib/api';
+import { attributesApi } from '@/lib/api';
 import { Skill, Attribute } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
 

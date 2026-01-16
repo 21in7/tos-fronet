@@ -143,3 +143,6 @@ dist
 docs/
 docs/*
 docs/task.md
+
+
+tos-frontend/*.txt

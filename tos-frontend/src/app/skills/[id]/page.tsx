@@ -15,7 +15,7 @@ const formatDate = (dateString?: string) => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) return 'Invalid Date';
     return date.toLocaleDateString('ko-KR');
-  } catch (e) {
+  } catch {
     return 'Error';
   }
 };
