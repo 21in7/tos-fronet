@@ -123,11 +123,14 @@ export default function HomePage() {
                 defaultValue={versions[0]}
                 onChange={(e) => router.push(`/items?version=${e.target.value}`)}
               >
-                {versions.map((version) => (
-                  <option key={version} value={version}>
-                    {version.replace('.ipf', '')}
-                  </option>
-                ))}
+                {versions.map((version, index) => {
+                  const versionStr = typeof version === 'string' ? version : JSON.stringify(version);
+                  return (
+                    <option key={`${versionStr}-${index}`} value={versionStr}>
+                      {versionStr.replace('.ipf', '')}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <p className="text-xs text-gray-500">
