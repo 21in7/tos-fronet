@@ -28,8 +28,7 @@ Copy-Item -Path ".next\static\*" -Destination ".next/standalone/.next/static" -R
 
 # 3. Deploy to Server (SCP)
 Write-Host "3. Uploading to Server (This may take a while)..." -ForegroundColor Yellow
-# Clean remote directory first (Optional, safer)
-ssh $SERVER_USER@$SERVER_IP "rm -rf $SERVER_PATH/.next"
+# Clean remote directory is now handled in step 4
 
 # Upload standalone folder
 # Note: Using scp recursively on Windows can be tricky with paths. 
@@ -45,12 +44,14 @@ scp deploy_package.zip "${SERVER_USER}@${SERVER_IP}:${SERVER_PATH}/deploy_packag
 Write-Host "4. Extracting and Restarting Application..." -ForegroundColor Yellow
 $commands = @(
     "cd $SERVER_PATH",
+    "pm2 delete $PM2_NAME || true",
+    "echo 'Cleaning old files...'",
+    "find . -mindepth 1 -maxdepth 1 ! -name 'deploy_package.zip' ! -name 'node_modules' -exec rm -rf {} +",
     "unzip -o deploy_package.zip",
     "rm deploy_package.zip",
     "echo 'Reinstalling dependencies for Linux compatibility...'",
     "rm -rf node_modules",
     "npm install --production",
-    "pm2 delete $PM2_NAME || true",
     "PORT=3001 pm2 start server.js --name $PM2_NAME",
     "pm2 save"
 )
