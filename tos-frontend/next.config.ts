@@ -29,9 +29,9 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // API 프록시 설정
+  // API 프록시 설정 - CORS 문제를 해결하기 위해 Next.js에서 프록시
   async rewrites() {
-    const apiServerUrl = process.env.API_SERVER_URL || 'http://192.168.50.224:3000';
+    const apiServerUrl = process.env.API_SERVER_URL || 'https://gihyeonofsoul.com';
 
     return [
       {

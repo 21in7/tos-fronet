@@ -1,9 +1,11 @@
 import { ApiResponse, QueryParams, DRFPaginatedResponse } from '@/types/api';
 
-// API 기본 URL 설정 - Django REST Framework API 사용
+// API 기본 URL 설정 - Next.js rewrites를 통해 프록시
+// 개발 환경에서는 /api로 요청하면 Next.js가 실제 API 서버로 프록시
+// 프로덕션 환경에서는 NEXT_PUBLIC_API_URL이 설정되어 있으면 해당 URL 사용
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
   ? `${process.env.NEXT_PUBLIC_API_URL}/api`
-  : 'https://gihyeonofsoul.com/api';
+  : '/api';
 
 class ApiClient {
   private baseURL: string;
