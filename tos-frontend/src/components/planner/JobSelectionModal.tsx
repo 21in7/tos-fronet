@@ -4,7 +4,7 @@ import { Fragment, useState, useMemo } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useQuery } from '@tanstack/react-query';
 import { jobsApi } from '@/lib/api';
-import { Job, QueryParams } from '@/types/api';
+import { Job, QueryParams, ApiResponse } from '@/types/api';
 import GameImage from '@/components/common/GameImage';
 import { Search, X } from 'lucide-react';
 
@@ -36,27 +36,75 @@ export default function JobSelectionModal({
                 // Fetch only base classes
                 return jobsApi.getAll({ is_starter: true, limit: 100 });
             } else {
-                // Fetch advanced classes, filter by job_tree if baseJob is selected
-                const params: QueryParams = { is_starter: false, limit: 200 };
+                // Fetch ALL advanced classes manually because API enforces pagination limit (50)
+                // and API filtering might be unreliable. We fetch everything page by page.
+                const allJobs: Job[] = [];
+                let page = 1;
+                let hasNext = true;
+                let lastResponse: ApiResponse<Job[]> | null = null;
+
+                // Fetch sub-jobs tree
+                // To be safe, we try to fetch as much as possible.
+                // If API filtering by job_tree works later, this loop will just be shorter.
+                const baseParams: QueryParams = { is_starter: false, limit: 100 };
                 if (baseJob?.job_tree) {
-                    params.job_tree = baseJob.job_tree;
+                    baseParams.job_tree = baseJob.job_tree;
                 }
-                return jobsApi.getAll(params);
+
+                while (hasNext) {
+                    const res = await jobsApi.getAll<Job[]>({ ...baseParams, page });
+                    lastResponse = res;
+
+                    if (res.data && Array.isArray(res.data)) {
+                        allJobs.push(...res.data);
+                    }
+
+                    // Check for next page
+                    // DRF returns 'next' url string if there is a next page, our adapter sets hasNext
+                    if (res.pagination?.hasNext) {
+                        page++;
+                    } else {
+                        hasNext = false;
+                    }
+
+                    // Safety break to prevent infinite loops in case of API issues
+                    if (page > 20) break;
+                }
+
+                console.log('Fetched all sub-jobs:', {
+                    tree: baseJob?.job_tree,
+                    totalFetched: allJobs.length,
+                    apiTotal: lastResponse?.pagination?.total
+                });
+
+                // Return constructed response
+                return {
+                    success: true,
+                    message: "Fetched all pages",
+                    timestamp: lastResponse?.timestamp || new Date().toISOString(),
+                    data: allJobs,
+                    pagination: {
+                        page: 1,
+                        limit: allJobs.length,
+                        total: allJobs.length,
+                        totalPages: 1,
+                        hasNext: false,
+                        hasPrev: false
+                    }
+                };
             }
         },
         staleTime: 1000 * 60 * 60, // 1 hour
     });
 
-    const jobs = useMemo(() => {
-        if (!jobsResponse?.data) return [];
-        return Array.isArray(jobsResponse.data) ? jobsResponse.data : [];
-    }, [jobsResponse]);
-
     const filteredJobs = useMemo(() => {
-        return jobs.filter(job => {
+        if (!jobsResponse?.data || !Array.isArray(jobsResponse.data)) return [];
+        return jobsResponse.data.filter((job: Job) => {
             // 1. Search filter
-            const matchesSearch = job.name.toLowerCase().includes(searchQuery.toLowerCase());
-            if (!matchesSearch) return false;
+            if (searchQuery) {
+                const matchesSearch = job.name.toLowerCase().includes(searchQuery.toLowerCase());
+                if (!matchesSearch) return false;
+            }
 
             // 2. Job Tree Filter (Client-side fallback)
             // Even if API filters, double check or essential if API doesn't support job_tree filter yet
@@ -66,7 +114,7 @@ export default function JobSelectionModal({
 
             return true;
         });
-    }, [jobs, searchQuery, baseJob]);
+    }, [jobsResponse, searchQuery, baseJob]);
 
     return (
         <Transition appear show={isOpen} as={Fragment}>
@@ -80,7 +128,7 @@ export default function JobSelectionModal({
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-black/25" />
+                    <div className="fixed inset-0 bg-black bg-opacity-25" />
                 </Transition.Child>
 
                 <div className="fixed inset-0 overflow-y-auto">
@@ -94,18 +142,16 @@ export default function JobSelectionModal({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-4 sm:p-6 text-left align-middle shadow-xl transition-all max-h-[90vh] flex flex-col">
-                                <div className="flex justify-between items-center mb-4">
-                                    <Dialog.Title
-                                        className="text-base sm:text-lg font-medium leading-6 text-gray-900"
-                                    >
-                                        {slotIndex === 0 ? '기본 직업 선택' : '전직 직업 선택'}
+                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all h-[80vh] flex flex-col">
+                                <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+                                    <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                                        직업 선택 {isBaseClassSelection ? '(Base)' : `(${baseJob?.name || 'Sub'})`}
                                     </Dialog.Title>
                                     <button
                                         onClick={onClose}
-                                        className="text-gray-400 hover:text-gray-500"
+                                        className="text-gray-400 hover:text-gray-500 focus:outline-none"
                                     >
-                                        <X className="w-5 h-5" />
+                                        <X className="w-6 h-6" />
                                     </button>
                                 </div>
 

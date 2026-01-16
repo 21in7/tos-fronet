@@ -1,4 +1,17 @@
-import { ApiResponse, QueryParams, DRFPaginatedResponse } from '@/types/api';
+import {
+  ApiResponse,
+  Attribute,
+  Buff,
+  DashboardStats,
+  DashboardStatus,
+  Item,
+  Job,
+  Map,
+  Monster,
+  QueryParams,
+  Skill,
+  DRFPaginatedResponse,
+} from '@/types/api';
 
 // API 기본 URL 설정 - Next.js rewrites를 통해 프록시
 // 개발 환경에서는 /api로 요청하면 Next.js가 실제 API 서버로 프록시
@@ -188,8 +201,8 @@ export const skillsApi = {
 
 // Jobs API
 export const jobsApi = {
-  getAll: (params?: QueryParams) => apiClient.get('/jobs', params),
-  getById: (id: number) => apiClient.get(`/jobs/${id}`),
+  getAll: <T = Job[]>(params?: QueryParams) => apiClient.get<T>('/jobs', params),
+  getById: (id: number) => apiClient.get<Job>(`/jobs/${id}`),
   create: (data: unknown) => apiClient.post('/jobs', data),
   update: (id: number, data: unknown) => apiClient.put(`/jobs/${id}`, data),
   delete: (id: number) => apiClient.delete(`/jobs/${id}`),
