@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { itemsApi } from '@/lib/api';
 import { Item } from '@/types/api';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -14,6 +15,8 @@ import GameImage from '@/components/common/GameImage';
 
 
 export default function ItemsPage() {
+  const searchParams = useSearchParams();
+  const version = searchParams.get('version');
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
   const [inputValue, setInputValue] = useState(''); // 입력 필드의 실제 값
@@ -49,11 +52,12 @@ export default function ItemsPage() {
   }, []);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['items', currentPage, limit, debouncedSearchQuery],
+    queryKey: ['items', currentPage, limit, debouncedSearchQuery, version],
     queryFn: () => itemsApi.getAll({
       page: currentPage,
       limit,
-      search: debouncedSearchQuery || undefined
+      search: debouncedSearchQuery || undefined,
+      version: version || undefined,
     }),
   });
 
@@ -123,6 +127,11 @@ export default function ItemsPage() {
         <div className="mb-8">
           <h1 className="text-xl sm:text-2xl font-bold text-gray-900">아이템</h1>
           <p className="mt-1 text-xs sm:text-sm text-gray-500">
+            {version && (
+              <span className="mr-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                버전: {version.replace('.ipf', '')}
+              </span>
+            )}
             {debouncedSearchQuery ? (
               <>
                 &quot;{debouncedSearchQuery}&quot;에 대한 검색 결과입니다.

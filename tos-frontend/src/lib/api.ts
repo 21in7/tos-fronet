@@ -218,4 +218,5 @@ export const dashboardApi = {
   getRecent: () => apiClient.get('/dashboard/recent'),
   getStatus: () => apiClient.get('/jobs?limit=1'), // /dashboard/status가 없으므로 jobs로 대체하여 연결 확인
   getTables: () => apiClient.get('/dashboard/tables'),
+  getVersions: () => apiClient.get<{ dashboard_version: string[] }>('/dashboard'),
 };

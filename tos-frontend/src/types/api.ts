@@ -311,4 +311,5 @@ export interface QueryParams {
   class_id?: number;
   map_name?: string;
   ordering?: string;
+  version?: string;
 }

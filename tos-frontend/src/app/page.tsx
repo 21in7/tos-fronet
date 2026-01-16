@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Search, Sword, Users, Sparkles, Map, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { useLanguageStore, VERSION_LANGUAGE_MAP } from '@/store/useLanguageStore';
+import { dashboardApi } from '@/lib/api';
+import { useQuery } from '@tanstack/react-query';
 
 const quickLinks = [
   { href: '/jobs', icon: Users, labelKo: '직업', labelEn: 'Jobs', color: 'from-blue-500 to-blue-600' },
@@ -19,6 +21,13 @@ export default function HomePage() {
   const router = useRouter();
   const { gameVersion } = useLanguageStore();
   const language = VERSION_LANGUAGE_MAP[gameVersion];
+
+  const { data: versionsData, isLoading: isLoadingVersions } = useQuery({
+    queryKey: ['dashboard', 'versions'],
+    queryFn: () => dashboardApi.getVersions(),
+  });
+
+  const versions = versionsData?.data?.dashboard_version || [];
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,7 +79,7 @@ export default function HomePage() {
       </form>
 
       {/* Quick Links */}
-      <div className="w-full max-w-3xl">
+      <div className="w-full max-w-3xl mb-12">
         <h2 className="text-center text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
           {language === 'ko' ? '빠른 탐색' : 'Quick Navigation'}
         </h2>
@@ -94,6 +103,38 @@ export default function HomePage() {
             );
           })}
         </div>
+      </div>
+
+      {/* Game Versions */}
+      <div className="w-full max-w-4xl">
+        <h2 className="text-center text-sm font-medium text-gray-500 uppercase tracking-wider mb-4">
+          {language === 'ko' ? '게임 버전' : 'Game Versions'}
+        </h2>
+
+        {isLoadingVersions ? (
+          <div className="flex justify-center p-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+          </div>
+        ) : versions && versions.length > 0 ? (
+          <div className="relative">
+            <div className="flex flex-wrap justify-center gap-2 max-h-32 overflow-y-auto p-2">
+              {versions.map((version) => (
+                <Link
+                  key={version}
+                  href={`/items?version=${version}`}
+                  className="px-3 py-1.5 rounded-full text-xs font-medium bg-gray-100 text-gray-700 
+                             hover:bg-blue-100 hover:text-blue-700 transition-colors border border-gray-200"
+                >
+                  {version.replace('.ipf', '')}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="text-center text-gray-400 text-sm">
+            {language === 'ko' ? '버전 정보를 불러올 수 없습니다.' : 'Failed to load versions.'}
+          </div>
+        )}
       </div>
     </div>
   );
