@@ -2,17 +2,36 @@
 
 import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { skillsApi } from '@/lib/api';
-import { Job, Skill } from '@/types/api';
+import { skillsApi, attributesApi } from '@/lib/api';
+import { Job, Skill, Attribute } from '@/types/api';
 import { usePlannerStore } from '@/store/usePlannerStore';
 import GameImage from '@/components/common/GameImage';
 import { Plus, Minus } from 'lucide-react';
 import SkillTooltip from './SkillTooltip';
+import { AttributeIcon } from './AttributeTooltip';
 
 interface SkillPanelProps {
     job: Job;
     slotIndex: number;
 }
+
+// 스킬 계수 배열 파싱 헬퍼
+const parseJsonArray = (jsonStr: string | null | undefined): number[] => {
+    if (!jsonStr) return [];
+    try {
+        return JSON.parse(jsonStr);
+    } catch {
+        return [];
+    }
+};
+
+// 현재 레벨에 해당하는 스킬 계수 가져오기
+const getSkillFactorAtLevel = (sfr: string | null | undefined, level: number): number | null => {
+    const arr = parseJsonArray(sfr);
+    if (arr.length === 0) return null;
+    const index = Math.max(0, Math.min(level - 1, arr.length - 1));
+    return arr[index];
+};
 
 export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
     const { skillAllocations, updateSkillLevel, getAllocatedSp } = usePlannerStore();
@@ -25,30 +44,54 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
         staleTime: 1000 * 60 * 60,
     });
 
+    // Fetch all attributes (we'll filter by skill name on the frontend)
+    const { data: attributesResponse } = useQuery({
+        queryKey: ['attributes', 'all'],
+        queryFn: () => attributesApi.getAll({ limit: 1000 }),
+        staleTime: 1000 * 60 * 60,
+    });
+
     const skills = useMemo(() => {
         if (!skillsResponse?.data || !Array.isArray(skillsResponse.data)) return [];
-        // API가 job_id로 필터링하지 않으므로, 프론트엔드에서 필터링
         return skillsResponse.data.filter((skill: Skill) =>
             skill.job && skill.job.id === job.id
         );
     }, [skillsResponse, job.id]);
 
-    const allocatedSp = getAllocatedSp(job.id);
-    const maxSp = slotIndex === 0 ? 15 : 66; // 15 for base, 66 for sub
+    // 스킬별 특성 매핑 (API의 skill 배열을 활용)
+    const skillAttributesMap = useMemo(() => {
+        const map: Record<number, Attribute[]> = {};
+        const allAttributes = (attributesResponse?.data as Attribute[]) || [];
 
-    // Helper to determine max level of a skill
-    // Checks multiple potential properties for robustness
+        // 각 특성의 skill 배열에서 스킬 ID를 확인하여 매핑
+        allAttributes.forEach(attr => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const linkedSkills = (attr as any).skill as Array<{ id: number }> | undefined;
+            if (linkedSkills && Array.isArray(linkedSkills)) {
+                linkedSkills.forEach(linkedSkill => {
+                    // 현재 직업의 스킬인지 확인
+                    const matchingSkill = skills.find((s: Skill) => s.id === linkedSkill.id);
+                    if (matchingSkill) {
+                        if (!map[matchingSkill.id]) {
+                            map[matchingSkill.id] = [];
+                        }
+                        map[matchingSkill.id].push(attr);
+                    }
+                });
+            }
+        });
+
+        return map;
+    }, [skills, attributesResponse]);
+
+    const allocatedSp = getAllocatedSp(job.id);
+    const maxSp = slotIndex === 0 ? 15 : 66;
+
     const getMaxLevel = (skill: Skill): number => {
-        // 1. Check specific max_level properties if available
         if (skill.max_level) return skill.max_level;
         if (skill.max_lv) return skill.max_lv;
-
-        // 2. Fallback to `level` if it seems to represent max level (common in some APIs)
-        // But be careful, sometimes `level` might be current level (though usually static data implies max)
         if (skill.level) return skill.level;
-
-        // 3. Absolute fallback
-        return 5; // Safe default
+        return 5;
     };
 
     const handleUpdateLevel = (skill: Skill, delta: number, e?: React.MouseEvent) => {
@@ -57,34 +100,18 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
 
         let change = delta;
 
-        // Shift+Click for Max Level (only for increasing)
         if (delta > 0 && e?.shiftKey) {
             const remainingLevel = maxFunctionLevel - currentLevel;
             const remainingSp = maxSp - allocatedSp;
             change = Math.min(remainingLevel, remainingSp);
-
-            // If we can't add anything, just return
             if (change <= 0) return;
         }
 
         const nextLevel = currentLevel + change;
 
-        // Check bounds
         if (nextLevel < 0) return;
         if (nextLevel > maxFunctionLevel) return;
-
-        // Check SP budget
-        // If increasing, check if we have SP
-        // Note: For shift-click, 'change' is calculated to fit in SP, so this check passes.
-        // For normal click, change=1, so if allocatedSp >= maxSp, we return.
-        if (change > 0 && (allocatedSp + change - delta) >= maxSp) {
-            // Logic correction: 
-            // Normal click: delta=1. If allocatedSp >= maxSp, return.
-            // Shift click: change=N. We ensured allocatedSp + N <= maxSp.
-            // But wait, standard check for normal click `allocatedSp >= maxSp` works if we add 1.
-            // Let's use a simpler check:
-            if (allocatedSp + change > maxSp) return;
-        }
+        if (change > 0 && allocatedSp + change > maxSp) return;
 
         updateSkillLevel(job.id, skill.id, nextLevel);
     };
@@ -128,11 +155,13 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
                     const currentLevel = skillAllocations[job.id]?.[skill.id] || 0;
                     const maxLevel = getMaxLevel(skill);
                     const isHovered = hoveredSkillId === skill.id;
+                    const attributes = skillAttributesMap[skill.id] || [];
+                    const skillFactor = currentLevel > 0 ? getSkillFactorAtLevel(skill.sfr, currentLevel) : null;
 
                     return (
                         <div key={skill.id} className="flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg border border-gray-100 hover:bg-gray-50 transition-colors">
                             <div
-                                className="relative group"
+                                className="relative group shrink-0"
                                 onMouseEnter={() => setHoveredSkillId(skill.id)}
                                 onMouseLeave={() => setHoveredSkillId(null)}
                             >
@@ -142,7 +171,7 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
                                     width={40}
                                     height={40}
                                     type="skill"
-                                    className="w-8 h-8 sm:w-12 sm:h-12"
+                                    className="w-10 h-10 sm:w-12 sm:h-12"
                                 />
                                 {isHovered && (
                                     <SkillTooltip skill={skill} currentLevel={currentLevel} />
@@ -150,13 +179,35 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
                             </div>
 
                             <div className="flex-1 min-w-0">
+                                {/* Skill Name */}
                                 <div className="text-sm font-medium text-gray-900 truncate" title={skill.name}>
                                     {skill.name}
                                 </div>
 
+                                {/* Attribute Icons Row */}
+                                {attributes.length > 0 && (
+                                    <div className="flex flex-wrap gap-1 mt-1">
+                                        {attributes.slice(0, 4).map(attr => (
+                                            <AttributeIcon key={attr.id} attribute={attr} />
+                                        ))}
+                                        {attributes.length > 4 && (
+                                            <span className="text-xs text-gray-400 self-center">+{attributes.length - 4}</span>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Level & Controls */}
                                 <div className="mt-2 flex items-center justify-between">
-                                    <div className="text-xs text-gray-500">
-                                        Lv. {currentLevel} / {maxLevel}
+                                    <div className="flex flex-col">
+                                        <span className="text-xs text-gray-500">
+                                            Lv. {currentLevel} / {maxLevel}
+                                        </span>
+                                        {/* Show skill factor if level > 0 */}
+                                        {skillFactor !== null && (
+                                            <span className="text-xs font-semibold text-orange-500">
+                                                {skillFactor.toLocaleString()}%
+                                            </span>
+                                        )}
                                     </div>
 
                                     <div className="flex items-center space-x-1">
