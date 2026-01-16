@@ -142,20 +142,23 @@ export default function JobSelectionModal({
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all h-[80vh] flex flex-col">
-                                <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                                    <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
+                            <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white p-4 sm:p-6 text-left align-middle shadow-xl transition-all max-h-[90vh] flex flex-col">
+                                <div className="flex justify-between items-center mb-4">
+                                    <Dialog.Title
+                                        as="h3"
+                                        className="text-base sm:text-lg font-medium leading-6 text-gray-900"
+                                    >
                                         직업 선택 {isBaseClassSelection ? '(Base)' : `(${baseJob?.name || 'Sub'})`}
                                     </Dialog.Title>
                                     <button
                                         onClick={onClose}
                                         className="text-gray-400 hover:text-gray-500 focus:outline-none"
                                     >
-                                        <X className="w-6 h-6" />
+                                        <X className="w-5 h-5" />
                                     </button>
                                 </div>
 
-                                <div className="mb-4 relative">
+                                <div className="relative mb-4">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                         <Search className="h-5 w-5 text-gray-400" />
                                     </div>
@@ -168,37 +171,42 @@ export default function JobSelectionModal({
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-4 max-h-[50vh] sm:max-h-[60vh] overflow-y-auto p-1 flex-1">
+                                <div className="flex-1 overflow-y-auto min-h-0">
                                     {isLoading ? (
-                                        <div className="col-span-full text-center py-8 text-gray-500">
-                                            로딩 중...
+                                        <div className="flex justify-center items-center h-full py-12">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
                                         </div>
-                                    ) : filteredJobs.length > 0 ? (
-                                        filteredJobs.map((job) => (
-                                            <button
-                                                key={job.id}
-                                                onClick={() => onSelect(job)}
-                                                className="flex flex-col items-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 transition-colors group"
-                                            >
-                                                <GameImage
-                                                    src={job.icon || job.icon_url}
-                                                    alt={job.name}
-                                                    width={40}
-                                                    height={40}
-                                                    type="job"
-                                                    className="mb-1 sm:mb-2 w-8 h-8 sm:w-12 sm:h-12 group-hover:scale-110 transition-transform"
-                                                />
-                                                <span className="text-xs sm:text-sm font-medium text-gray-900 text-center line-clamp-1">
-                                                    {job.name}
-                                                </span>
-                                                <span className="text-xs text-gray-500 mt-0.5 sm:mt-1 hidden sm:block">
-                                                    {job.job_tree}
-                                                </span>
-                                            </button>
-                                        ))
                                     ) : (
-                                        <div className="col-span-full text-center py-8 text-gray-500">
-                                            검색 결과가 없습니다.
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+                                            {filteredJobs.map((job) => (
+                                                <button
+                                                    key={job.id}
+                                                    onClick={() => onSelect(job)}
+                                                    className="flex flex-col items-center p-3 sm:p-4 border rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors text-center group h-full"
+                                                >
+                                                    <div className="relative w-10 h-10 sm:w-12 sm:h-12 mb-2 sm:mb-3">
+                                                        <GameImage
+                                                            src={job.icon || job.icon_url}
+                                                            alt={job.name}
+                                                            width={48}
+                                                            height={48}
+                                                            type="job"
+                                                            className="object-contain group-hover:scale-110 transition-transform"
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs sm:text-sm font-medium text-gray-900 line-clamp-2">
+                                                        {job.name}
+                                                    </span>
+                                                    <span className="text-[10px] sm:text-xs text-gray-500 mt-1">
+                                                        {job.job_tree}
+                                                    </span>
+                                                </button>
+                                            ))}
+                                            {filteredJobs.length === 0 && (
+                                                <div className="col-span-full text-center py-8 text-gray-500 text-sm">
+                                                    검색 결과가 없습니다.
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
