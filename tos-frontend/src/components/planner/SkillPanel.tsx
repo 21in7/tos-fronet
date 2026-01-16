@@ -145,7 +145,7 @@ export default function SkillPanel({ job, slotIndex }: SkillPanelProps) {
                                     className="w-8 h-8 sm:w-12 sm:h-12"
                                 />
                                 {isHovered && (
-                                    <SkillTooltip skill={skill} />
+                                    <SkillTooltip skill={skill} currentLevel={currentLevel} />
                                 )}
                             </div>
 

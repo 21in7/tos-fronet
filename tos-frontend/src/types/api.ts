@@ -184,7 +184,7 @@ export interface Skill {
   level?: number;
   max_level?: number; // 메인 Max Level 필드 (예상)
   max_lv?: number; // 대체 Max Level 필드
-  cooldown?: number;
+  cooldown?: number; // 쿨다운 (ms)
   cost?: number;
   mana_cost?: number;
   damage?: number;
@@ -207,6 +207,13 @@ export interface Skill {
   };
   icon?: string;      // 아이콘 파일명 (예: "icon_scout_blooderuption")
   icon_url?: string;  // 전체 아이콘 URL (deprecated, icon 사용 권장)
+  // 플래너용 추가 필드
+  sp?: number;                    // SP 소모량
+  sfr?: string | null;            // 스킬 계수 JSON 배열 문자열 (레벨별)
+  overheat?: number;              // 오버히트
+  captionratio1?: string | null;  // 광역 공격 비율 JSON 배열 문자열
+  effect?: string;                // 효과 텍스트 (스킬 계수 플레이스홀더 포함)
+  unlock?: number;                // 해금 레벨
   created?: string;
   updated?: string;
   created_at: string;
