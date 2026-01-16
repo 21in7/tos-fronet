@@ -12,11 +12,7 @@ interface ChallengeData {
 
 const WEEKS = ['일', '월', '화', '수', '목', '금', '토'];
 
-interface RawChallengeItem {
-    id: string;
-    name: string;
-    image?: string;
-}
+
 
 export default function ChallengeCalendar() {
     const [currentDate, setCurrentDate] = useState(new Date());
@@ -29,46 +25,45 @@ export default function ChallengeCalendar() {
     useEffect(() => {
         const fetchChallenges = async () => {
             try {
-                const isEvenMonth = month % 2 === 0;
-                const endpoint = isEvenMonth ? '/api/challenges/em' : '/api/challenges/om';
-                const apiUrl = process.env.NEXT_PUBLIC_API_URL
-                    ? `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`
-                    : endpoint;
+                const response = await import('@/lib/api').then(m => m.challengeModeAutoMapsApi.getAll());
 
-                const response = await fetch(apiUrl);
-
-                if (!response.ok) {
+                if (!response.success || !Array.isArray(response.data)) {
                     throw new Error('Failed to fetch challenges');
                 }
 
-                const result = await response.json();
-                console.log('API Response:', result);
+                const allMaps = response.data;
+                const isEvenMonth = month % 2 === 0;
 
-                let items: RawChallengeItem[] = [];
-                if (Array.isArray(result)) {
-                    items = result;
-                } else if (result.data) {
-                    if (Array.isArray(result.data)) {
-                        items = result.data;
-                    } else if (isEvenMonth && Array.isArray(result.data.em)) {
-                        items = result.data.em;
-                    } else if (!isEvenMonth && Array.isArray(result.data.om)) {
-                        items = result.data.om;
-                    }
-                }
+                // Filter and map based on month (Odd=OM=1~31, Even=EM=32~62)
+                const mappedItems: ChallengeData[] = allMaps
+                    .filter(map => {
+                        if (isEvenMonth) {
+                            return map.id >= 32 && map.id <= 62;
+                        } else {
+                            return map.id >= 1 && map.id <= 31;
+                        }
+                    })
+                    .map(map => {
+                        const baseUrl = isEvenMonth
+                            ? 'https://r2.gihyeonofsoul.com/em/'
+                            : 'https://r2.gihyeonofsoul.com/om/';
 
-                // Map API data to component state
-                const mappedItems: ChallengeData[] = items.map((item: RawChallengeItem) => {
-                    const baseUrl = isEvenMonth
-                        ? 'https://r2.gihyeonofsoul.com/em/'
-                        : 'https://r2.gihyeonofsoul.com/om/';
+                        // Calculate day
+                        const day = isEvenMonth ? map.id - 31 : map.id;
 
-                    return {
-                        day: parseInt(item.id, 10),
-                        mapName: item.name,
-                        mapImage: item.image ? `${baseUrl}${item.image}` : undefined
-                    };
-                });
+                        // Use icon from API if available, otherwise try to construct from name or provide fallback
+                        // The user mentioned images are in R2 bucket under em/om
+                        // Assuming API 'icon' field or 'icon_url' might contain the filename or we can use the map name
+                        // For now, let's look at the 'icon' field from the new API. 
+                        // If the previous API 'image' field corresponded to a filename, we hope 'icon' does too.
+                        const imageName = map.icon || '';
+
+                        return {
+                            day,
+                            mapName: map.name,
+                            mapImage: imageName ? `${baseUrl}${imageName}` : undefined
+                        };
+                    });
 
                 setChallengeData(mappedItems);
             } catch (error) {

@@ -1,15 +1,7 @@
 import {
   ApiResponse,
-  Attribute,
-  Buff,
-  DashboardStats,
-  DashboardStatus,
-  Item,
   Job,
-  Map,
-  Monster,
   QueryParams,
-  Skill,
   DRFPaginatedResponse,
 } from '@/types/api';
 
@@ -217,6 +209,12 @@ export const mapsApi = {
   update: (id: number, data: unknown) => apiClient.put(`/maps/${id}`, data),
   delete: (id: number) => apiClient.delete(`/maps/${id}`),
   getStats: () => apiClient.get('/maps/stats'),
+};
+
+// Challenge Mode Auto Maps API
+export const challengeModeAutoMapsApi = {
+  getAll: (params?: QueryParams) => apiClient.get('/challenge-mode-auto-maps', params),
+  getById: (id: number) => apiClient.get(`/challenge-mode-auto-maps/${id}`),
 };
 
 // Dashboard API

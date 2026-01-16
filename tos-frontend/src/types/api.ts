@@ -277,6 +277,23 @@ export interface DashboardStatus {
   timestamp: string;
 }
 
+// Challenge Mode Auto Map 타입
+export interface ChallengeModeAutoMap {
+  id: number;
+  class_id?: number;
+  name: string;
+  map_name?: string;
+  recommend_party_player_count?: number;
+  min_level?: number;
+  max_level?: number;
+  icon?: string;
+
+  // 메타 데이터
+  icon_url?: string;
+  created: string;
+  updated: string;
+}
+
 // 쿼리 파라미터 타입
 export interface QueryParams {
   [key: string]: string | number | boolean | undefined;
@@ -291,4 +308,7 @@ export interface QueryParams {
   job_id?: number;
   is_starter?: boolean;
   job_tree?: string;
+  class_id?: number;
+  map_name?: string;
+  ordering?: string;
 }
