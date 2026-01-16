@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, Suspense } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -12,9 +12,15 @@ import Pagination from '@/components/common/Pagination';
 import { ExternalLink, Search, X } from 'lucide-react';
 import GameImage from '@/components/common/GameImage';
 
-
-
 export default function ItemsPage() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center h-64"><LoadingSpinner size="lg" /></div>}>
+      <ItemsPageContent />
+    </Suspense>
+  );
+}
+
+function ItemsPageContent() {
   const searchParams = useSearchParams();
   const version = searchParams.get('version');
   const [currentPage, setCurrentPage] = useState(1);
